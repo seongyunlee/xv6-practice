@@ -30,3 +30,7 @@ SYSCALL(sbrk)
 SYSCALL(sleep)
 SYSCALL(uptime)
 SYSCALL(getpname)
+SYSCALL(getnice)
+SYSCALL(setnice)
+SYSCALL(ps)
+

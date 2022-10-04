@@ -98,3 +98,26 @@ sys_getpname(void)
     return -1;
   return getpname(pid);
 }
+int
+sys_getnice(void){
+ int pid;
+ if(argint(0,&pid)<0)
+    return -1;
+ return getnice(pid);
+}
+int
+sys_setnice(void){
+  int pid;
+  int new_nice;
+  if(argint(0,&pid)<0 ||  argint(1,&new_nice)<0)
+    return -1;
+   return setnice(pid,new_nice);
+}
+int
+sys_ps(void){
+    int pid;
+    if(argint(0,&pid)<0)
+        return -1;
+    ps(pid);
+    return 0;
+}
