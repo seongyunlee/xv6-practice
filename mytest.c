@@ -3,36 +3,34 @@
 #include "stat.h"
 
 int main(){
-    int i;
+    printf(1,"test program start\n");
+    int c_pid=fork();
+    printf(1,"Process(:%d) for test is on running\n",getpid());
     
-    printf(1,"test pid %d\n",getpid());
-
-    //test getpname
-    for (i=1;i<11;i++){
-        printf(1,"%d: ",i);
-        if (getpname(i))
-            printf(1,"Wrong pid\n");
+    if(c_pid==0){
+        setnice(getpid(),0);
     }
-    //test getnice
-    for(i=1;i<11;i++){
-        printf(1,"%d nice : %d\n",i,getnice(i));
+    else{
+        setnice(getpid(),5);
     }
-    
-    //test ps
+    int cnt=0;
+    int j=0;
     ps(0);
-
-    //test setnice
-    for(i=1;i<11;i++){
-        setnice(i,i+5);
+    while(j<100){
+        int i = 0;
+        while(i<10000000){
+            if(i%13434==0)
+                cnt++;
+            i++;
+        }
+        j++;
+        printf(1,"%d : %d/100\n",getpid(),j);
+        if(j%10==0)
+            ps(0);
     }
-
-    //test ps
+    printf(1,"%d\n",cnt);
     ps(0);
-    for(i=0;i<20;i++){
-        printf(1,"ps test %d\n",i);
-        ps(i);
-    }
-    
-
+    wait();
+    printf(1,"Process(:%d) exit\n",getpid());
     exit();
 }

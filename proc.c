@@ -13,6 +13,11 @@ struct {
 } ptable;
 
 static struct proc *initproc;
+int uproc_start_time;
+
+double weight[40]={
+    88817, 71054, 56843, 45474, 36379, 29103, 23283, 18626, 14901, 11920, 9536, 7629, 6103, 4882, 3906, 3124, 2500, 2000, 1600, 1280, 1024, 819, 655, 524, 419, 335, 268, 214, 171, 137, 109, 87, 70, 56, 45, 36, 28, 23, 18, 14
+};
 
 int nextpid = 1;
 extern void forkret(void);
@@ -89,7 +94,8 @@ found:
   p->state = EMBRYO;
   p->pid = nextpid++;
   p->nice = 20;
-
+  p->vruntime = 0;
+  p->time_slice=0;
   release(&ptable.lock);
 
   // Allocate kernel stack.
@@ -261,7 +267,7 @@ exit(void)
         wakeup1(initproc);
     }
   }
-
+  p->vruntime+=(ticks-uproc_start_time)*((double)1024/weight[p->nice]*(double)1000); //
   // Jump into the scheduler, never to return.
   curproc->state = ZOMBIE;
   sched();
@@ -337,14 +343,33 @@ scheduler(void)
       if(p->state != RUNNABLE)
         continue;
 
+      int min_vrunTime=p->vruntime; // ensure min_p would not be null;
+      struct proc *min_p;
+      double total_weight=0;
+      min_p=p;
+      struct proc *pp;
+      for(pp= ptable.proc; pp<&ptable.proc[NPROC]; pp++){
+        if(pp->state != RUNNABLE)
+          continue;
+        total_weight+=weight[pp->nice];
+        if(min_vrunTime > pp->vruntime){
+          min_p=pp;
+          min_vrunTime = pp->vruntime;
+        }
+      }
+      //cprintf("total weight of runnable %d\n",(int)total_weight);
+      min_p->time_slice=(int)(10*(weight[min_p->nice])/total_weight)+1;
+      //cprintf("Give %d time slice to %d\n",min_p->time_slice,min_p->pid);
+
       // Switch to chosen process.  It is the process's job
       // to release ptable.lock and then reacquire it
       // before jumping back to us.
-      c->proc = p;
-      switchuvm(p);
-      p->state = RUNNING;
+      uproc_start_time= ticks;       //set process start time to current tick;
+      c->proc = min_p;
+      switchuvm(min_p);
+      min_p->state = RUNNING;
 
-      swtch(&(c->scheduler), p->context);
+      swtch(&(c->scheduler), min_p->context);
       switchkvm();
 
       // Process is done running for now.
@@ -387,8 +412,12 @@ void
 yield(void)
 {
   acquire(&ptable.lock);  //DOC: yieldlock
-  myproc()->state = RUNNABLE;
-  sched();
+  struct proc *p= myproc();
+  if(p->time_slice<=(ticks-uproc_start_time)){
+    p->state = RUNNABLE;
+    p->vruntime+=(ticks-uproc_start_time)*((double)1024/weight[p->nice]*(double)1000);
+    sched();
+   }
   release(&ptable.lock);
 }
 
@@ -439,9 +468,7 @@ sleep(void *chan, struct spinlock *lk)
   // Go to sleep.
   p->chan = chan;
   p->state = SLEEPING;
-
   sched();
-
   // Tidy up.
   p->chan = 0;
 
@@ -460,7 +487,7 @@ wakeup1(void *chan)
 {
   struct proc *p;
 
-  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
     if(p->state == SLEEPING && p->chan == chan)
       p->state = RUNNABLE;
 }
@@ -580,6 +607,24 @@ int setnice(int pid,int new_nice){
     release(&ptable.lock);
     return -1;  
 }
+void printIntFormatted(int x){
+  cprintf("%d",x);
+  int k=0;
+  if(x==0){
+    k=1;
+  }
+  else{
+    while(x>0){
+      k++;
+      x/=10;
+    }
+  }
+  k=16-k;
+  while(k>0){
+    cprintf(" ");
+    k--;
+  }
+}
 void ps(int pid){
     static char *states[] = {
     [UNUSED]    "UNUSED  ",
@@ -593,12 +638,18 @@ void ps(int pid){
     struct proc *p;
 
     acquire(&ptable.lock);
-    cprintf("name\tpid\t\tstate\t\t\tpriority\n");
+    cprintf("name\t\tpid\tstate       priority        runtime/weight  runtime         vruntime         tick %d\n",ticks*1000);
     for(p=ptable.proc;p<&ptable.proc[NPROC];p++){
         if(pid==0 || p->pid == pid){
-            if(p->pid!=0)
-                 cprintf("%s\t%d\t\t%s\t\t%d\n",p->name,p->pid,states[p->state],p->nice);
+            if(p->pid!=0){
+                cprintf("%s\t\t%d\t%s    ",p->name,p->pid,states[p->state]);
+                printIntFormatted(p->nice);//priority
+                printIntFormatted(p->vruntime/20);//runtime/weight (millitick)
+                printIntFormatted(p->vruntime/20*weight[p->nice]);
+                printIntFormatted(p->vruntime);
+                cprintf("\n");
             }
+        }
     }
     release(&ptable.lock);
     return;  
