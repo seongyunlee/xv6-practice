@@ -465,6 +465,7 @@ sleep(void *chan, struct spinlock *lk)
     acquire(&ptable.lock);  //DOC: sleeplock1
     release(lk);
   }
+  p->vruntime+=(ticks-uproc_start_time)*((double)1024/weight[p->nice]*(double)1000);
   // Go to sleep.
   p->chan = chan;
   p->state = SLEEPING;
