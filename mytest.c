@@ -8,17 +8,17 @@ int main(){
     printf(1,"Process(:%d) for test is on running\n",getpid());
     
     if(c_pid==0){
-        setnice(getpid(),10);
+        setnice(getpid(),39);
     }
     else{
-        setnice(getpid(),5);
+        setnice(getpid(),39);
     }
     int cnt=0;
     int j=0;
     ps(0);
     while(j<100){
         int i = 0;
-        while(i<10000000){
+        while(i<1000000000){
             if(i%13434==0)
                 cnt++;
             i++;

@@ -19,6 +19,7 @@ double weight[40]={
     88817, 71054, 56843, 45474, 36379, 29103, 23283, 18626, 14901, 11920, 9536, 7629, 6103, 4882, 3906, 3124, 2500, 2000, 1600, 1280, 1024, 819, 655, 524, 419, 335, 268, 214, 171, 137, 109, 87, 70, 56, 45, 36, 28, 23, 18, 14
 };
 
+
 int nextpid = 1;
 extern void forkret(void);
 extern void trapret(void);
@@ -260,7 +261,7 @@ exit(void)
   if(curproc->parent->state==SLEEPING && curproc->parent->chan==curproc->parent){
     wakeup1(curproc->parent);
     //set woken process's vruntime
-    int min_vrunTime=curproc->parent->vruntime; // ensure min_p would not be null;
+    uint min_vrunTime=curproc->parent->vruntime; // ensure min_p would not be null;
     struct proc *pp;
     for(pp= ptable.proc; pp<&ptable.proc[NPROC]; pp++){
       if(pp->state != RUNNABLE)
@@ -291,7 +292,7 @@ void sys_sleepEnd(struct proc *p){
   
   acquire(&ptable.lock);
 
-  int min_vrunTime=p->vruntime; // ensure min_p would not be null;
+  uint min_vrunTime=p->vruntime; // ensure min_p would not be null;
   struct proc *pp;
   for(pp= ptable.proc; pp<&ptable.proc[NPROC]; pp++){
     if(pp->state != RUNNABLE)
@@ -611,6 +612,12 @@ getpname(int pid){
   release(&ptable.lock);
   return -1;
 }
+void add_vruntime(struct proc *p,uint elapsed){
+    if(__UINT32_MAX__-p->vruntime<elapsed){
+        p->upper_vruntime+=1;
+    }
+    p->vruntime+=elapsed;
+}
 int getnice(int pid){
     struct proc *p;
     
@@ -661,6 +668,24 @@ void printIntFormatted(int x){
     k--;
   }
 }
+/*
+void printunsignedlonglong(unsigned long long x) {
+	char n[19];
+	int idx = 0;
+	while (1) {
+		n[idx++] = (int)(x % 10);
+		x = x / 10;
+		if (x == 0)
+			break;
+	}
+	for (int i = idx - 1; i >= 0; i--) {
+		cprintf("%d", n[i]);
+	}
+	for (int i = 19 - idx; i > 0; i--) {
+		cprintf(" ");
+	}
+}
+*/
 void ps(int pid){
     static char *states[] = {
     [UNUSED]    "UNUSED  ",
@@ -672,7 +697,7 @@ void ps(int pid){
     };
 
     struct proc *p;
-
+    
     acquire(&ptable.lock);
     cprintf("name\t\tpid\tstate       priority        runtime/weight  runtime         vruntime         tick %d\n",ticks*1000);
     for(p=ptable.proc;p<&ptable.proc[NPROC];p++){
