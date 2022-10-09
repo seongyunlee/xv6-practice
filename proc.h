@@ -34,7 +34,7 @@ struct context {
 
 enum procstate { UNUSED, EMBRYO, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };
 
-
+extern double weight[40];
 
 // Per-process state
 struct proc {
@@ -55,6 +55,8 @@ struct proc {
   int vruntime;                // virutal Runtime (milli tick)
   int time_slice;               // time_slice given by scheduler (tick)
 };
+
+void sys_sleepEnd(struct proc *p);
 
 // Process memory is laid out contiguously, low addresses first:
 //   text

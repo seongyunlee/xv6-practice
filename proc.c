@@ -257,7 +257,20 @@ exit(void)
   acquire(&ptable.lock);
 
   // Parent might be sleeping in wait().
-  wakeup1(curproc->parent);
+  if(curproc->parent->state==SLEEPING && curproc->parent->chan==curproc->parent){
+    wakeup1(curproc->parent);
+    //set woken process's vruntime
+    int min_vrunTime=curproc->parent->vruntime; // ensure min_p would not be null;
+    struct proc *pp;
+    for(pp= ptable.proc; pp<&ptable.proc[NPROC]; pp++){
+      if(pp->state != RUNNABLE)
+        continue;
+      if(min_vrunTime > pp->vruntime)
+        min_vrunTime = pp->vruntime;
+    }
+    min_vrunTime-=20/weight[curproc->parent->pid];
+    curproc->parent->vruntime=min_vrunTime>0?min_vrunTime:0;
+  }
 
   // Pass abandoned children to init.
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
@@ -273,6 +286,26 @@ exit(void)
   sched();
   panic("zombie exit");
 }
+
+void sys_sleepEnd(struct proc *p){
+  
+  acquire(&ptable.lock);
+
+  int min_vrunTime=p->vruntime; // ensure min_p would not be null;
+  struct proc *pp;
+  for(pp= ptable.proc; pp<&ptable.proc[NPROC]; pp++){
+    if(pp->state != RUNNABLE)
+      continue;
+    if(min_vrunTime > pp->vruntime)
+      min_vrunTime = pp->vruntime;
+  }
+  min_vrunTime-=20/weight[p->pid];
+  p->vruntime=min_vrunTime>0?min_vrunTime:0;
+
+  release(&ptable.lock);
+  return;
+}
+
 
 // Wait for a child process to exit and return its pid.
 // Return -1 if this process has no children.
@@ -489,8 +522,10 @@ wakeup1(void *chan)
   struct proc *p;
 
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
-    if(p->state == SLEEPING && p->chan == chan)
+    if(p->state == SLEEPING && p->chan == chan){
       p->state = RUNNABLE;
+      
+    }
 }
 
 // Wake up all processes sleeping on chan.

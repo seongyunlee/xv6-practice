@@ -8,10 +8,10 @@ int main(){
     printf(1,"Process(:%d) for test is on running\n",getpid());
     
     if(c_pid==0){
-        setnice(getpid(),5);
+        setnice(getpid(),10);
     }
     else{
-        setnice(getpid(),10);
+        setnice(getpid(),5);
     }
     int cnt=0;
     int j=0;
@@ -22,6 +22,12 @@ int main(){
             if(i%13434==0)
                 cnt++;
             i++;
+        }
+        if(c_pid==0 && j==20){
+            printf(1,"%d sleeps\n",getpid());
+            sleep(1);
+            printf(1,"%d is waked up\n",getpid());
+            ps(0);
         }
         j++;
         printf(1,"%d : %d/100\n",getpid(),j);

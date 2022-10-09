@@ -73,6 +73,8 @@ sys_sleep(void)
     }
     sleep(&ticks, &tickslock);
   }
+  sys_sleepEnd(myproc());
+
   release(&tickslock);
   return 0;
 }
