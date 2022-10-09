@@ -18,14 +18,14 @@ int main(){
     ps(0);
     while(j<100){
         int i = 0;
-        while(i<1000000000){
+        while(i<10000000){
             if(i%13434==0)
                 cnt++;
             i++;
         }
         if(c_pid==0 && j==20){
             printf(1,"%d sleeps\n",getpid());
-            sleep(1);
+            sleep(3000);
             printf(1,"%d is waked up\n",getpid());
             ps(0);
         }

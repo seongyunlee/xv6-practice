@@ -26,6 +26,7 @@ extern void trapret(void);
 
 static void wakeup1(void *chan);
 
+void add_vruntime(struct proc *p, uint elapsed);
 void
 pinit(void)
 {
@@ -97,6 +98,7 @@ found:
   p->nice = 20;
   p->vruntime = 0;
   p->time_slice=0;
+  p->upper_vruntime = 0;
   release(&ptable.lock);
 
   // Allocate kernel stack.
@@ -262,15 +264,19 @@ exit(void)
     wakeup1(curproc->parent);
     //set woken process's vruntime
     uint min_vrunTime=curproc->parent->vruntime; // ensure min_p would not be null;
+    uint min_upper_vruntime=curproc->parent->upper_vruntime;
     struct proc *pp;
     for(pp= ptable.proc; pp<&ptable.proc[NPROC]; pp++){
       if(pp->state != RUNNABLE)
         continue;
-      if(min_vrunTime > pp->vruntime)
+      if(min_upper_vruntime > pp->upper_vruntime ||( min_upper_vruntime==pp->upper_vruntime&&min_vrunTime > pp->vruntime)){
         min_vrunTime = pp->vruntime;
+        min_upper_vruntime = pp->vruntime;
+      }
     }
-    min_vrunTime-=20/weight[curproc->parent->pid];
+    min_vrunTime-=1024/weight[curproc->parent->pid]; // not consider overflow;
     curproc->parent->vruntime=min_vrunTime>0?min_vrunTime:0;
+    curproc->parent->upper_vruntime=min_upper_vruntime;
   }
 
   // Pass abandoned children to init.
@@ -281,7 +287,7 @@ exit(void)
         wakeup1(initproc);
     }
   }
-  p->vruntime+=(ticks-uproc_start_time)*((double)1024/weight[p->nice]*(double)1000); //
+  add_vruntime(p,(ticks-uproc_start_time)*((double)1024/weight[p->nice]*(double)1000)); //
   // Jump into the scheduler, never to return.
   curproc->state = ZOMBIE;
   sched();
@@ -293,16 +299,19 @@ void sys_sleepEnd(struct proc *p){
   acquire(&ptable.lock);
 
   uint min_vrunTime=p->vruntime; // ensure min_p would not be null;
+  uint min_upper_vruntime=p->upper_vruntime;
   struct proc *pp;
   for(pp= ptable.proc; pp<&ptable.proc[NPROC]; pp++){
     if(pp->state != RUNNABLE)
       continue;
-    if(min_vrunTime > pp->vruntime)
+    if(min_upper_vruntime > pp->upper_vruntime ||( min_upper_vruntime==pp->upper_vruntime && min_vrunTime > pp->vruntime)){
       min_vrunTime = pp->vruntime;
+      min_upper_vruntime=pp->upper_vruntime;
+    }
   }
-  min_vrunTime-=20/weight[p->pid];
+  min_vrunTime-=1024/weight[p->pid];
   p->vruntime=min_vrunTime>0?min_vrunTime:0;
-
+  p->upper_vruntime=min_upper_vruntime;//not consider overflow;
   release(&ptable.lock);
   return;
 }
@@ -377,7 +386,8 @@ scheduler(void)
       if(p->state != RUNNABLE)
         continue;
 
-      int min_vrunTime=p->vruntime; // ensure min_p would not be null;
+      uint min_vrunTime=p->vruntime; // ensure min_p would not be null;
+      uint min_upper_vruntime=p->upper_vruntime;
       struct proc *min_p;
       double total_weight=0;
       min_p=p;
@@ -386,9 +396,10 @@ scheduler(void)
         if(pp->state != RUNNABLE)
           continue;
         total_weight+=weight[pp->nice];
-        if(min_vrunTime > pp->vruntime){
+        if(min_upper_vruntime > pp->upper_vruntime || ( min_upper_vruntime == pp->upper_vruntime && min_vrunTime > pp->vruntime)){
           min_p=pp;
           min_vrunTime = pp->vruntime;
+          min_upper_vruntime=pp->upper_vruntime;
         }
       }
       //cprintf("total weight of runnable %d\n",(int)total_weight);
@@ -449,7 +460,7 @@ yield(void)
   struct proc *p= myproc();
   if(p->time_slice<=(ticks-uproc_start_time)){
     p->state = RUNNABLE;
-    p->vruntime+=(ticks-uproc_start_time)*((double)1024/weight[p->nice]*(double)1000);
+    add_vruntime(p,(ticks-uproc_start_time)*((double)1024/weight[p->nice]*(double)1000));
     sched();
    }
   release(&ptable.lock);
@@ -499,7 +510,7 @@ sleep(void *chan, struct spinlock *lk)
     acquire(&ptable.lock);  //DOC: sleeplock1
     release(lk);
   }
-  p->vruntime+=(ticks-uproc_start_time)*((double)1024/weight[p->nice]*(double)1000);
+  add_vruntime(p,(ticks-uproc_start_time)*((double)1024/weight[p->nice]*(double)1000));
   // Go to sleep.
   p->chan = chan;
   p->state = SLEEPING;
@@ -651,6 +662,8 @@ int setnice(int pid,int new_nice){
     return -1;  
 }
 void printIntFormatted(int x){
+  x<<=1;
+  x=(int)((uint)x>>1);
   cprintf("%d",x);
   int k=0;
   if(x==0){
