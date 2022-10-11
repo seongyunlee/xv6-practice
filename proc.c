@@ -288,6 +288,9 @@ exit(void)
     }
   }
  //
+  add_vruntime(p->vruntime,(uint)((ticks-uproc_start_time)*(1024/weight[p->nice]*1000))); //
+  add_vruntime(p->scaled_runtime,(uint)((ticks-uproc_start_time)*(1000/weight[p->nice]))); //
+  add_vruntime(p->runtime,(ticks-uproc_start_time)*1000);
 
   // Jump into the scheduler, never to return.
   curproc->state = ZOMBIE;
@@ -513,11 +516,6 @@ sleep(void *chan, struct spinlock *lk)
   if(lk != &ptable.lock){  //DOC: sleeplock0
     acquire(&ptable.lock);  //DOC: sleeplock1
     release(lk);
-  }
-  if(ticks-uproc_start_time>=2){
-    add_vruntime(p->vruntime,(uint)((ticks-uproc_start_time)*(1024/weight[p->nice]*1000))); //
-    add_vruntime(p->scaled_runtime,(uint)((ticks-uproc_start_time)*(1000/weight[p->nice]))); //
-    add_vruntime(p->runtime,(ticks-uproc_start_time)*1000); //
   }
   // Go to sleep.
   p->chan = chan;
