@@ -269,7 +269,7 @@ exit(void)
     wakeup1(curproc->parent);
     //set woken process's vruntime
     struct proc *min_p; // process which has minimum vruntime
-    min_p=p;
+    min_p=curproc->parent;
     struct proc *pp;
     for(pp= ptable.proc; pp<&ptable.proc[NPROC]; pp++){
       if(pp->state != RUNNABLE)
