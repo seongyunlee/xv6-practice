@@ -288,6 +288,7 @@ exit(void)
     }
   }
  //
+
   set_runtimes(curproc);
 
   // Jump into the scheduler, never to return.
@@ -315,14 +316,10 @@ void sys_sleepEnd(struct proc *p){
   return;
 }
 
-void sys_sleepStart(struct proc *p){ 
-  set_runtimes(p);
-}
-
 void set_runtimes(struct proc *p){
   add_vruntime(p->vruntime,(uint)(((double)(ticks-uproc_start_time))*(1024/weight[p->nice]*1000))); //
   add_vruntime(p->scaled_runtime,(uint)(((double)(ticks-uproc_start_time))*(1000/weight[p->nice]))); //
-  add_vruntime(p->runtime,(uint)(ticks-uproc_start_time+1)*1000);
+  add_vruntime(p->runtime,(uint)(ticks-uproc_start_time)*1000);
 }
 
 // Wait for a child process to exit and return its pid.
@@ -363,7 +360,6 @@ wait(void)
       release(&ptable.lock);
       return -1;
     }
-
     // Wait for children to exit.  (See wakeup1 call in proc_exit.)
     sleep(curproc, &ptable.lock);  //DOC: wait-sleep
   }
@@ -513,6 +509,7 @@ sleep(void *chan, struct spinlock *lk)
     acquire(&ptable.lock);  //DOC: sleeplock1
     release(lk);
   }
+  set_runtimes(p);
   // Go to sleep.
   p->chan = chan;
   p->state = SLEEPING;

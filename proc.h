@@ -59,7 +59,6 @@ struct proc {
 };
 
 void sys_sleepEnd(struct proc *p);
-void sys_sleepStart(struct proc *p);
 
 // Process memory is laid out contiguously, low addresses first:
 //   text
