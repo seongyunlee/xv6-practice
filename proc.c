@@ -639,7 +639,7 @@ void set_wokenup_vruntime(uint *woken,uint *min,int nice){
 }
 //compare a,b return 1 if a>b else 0
 int compare_vruntime(uint* a,uint* b){
-   for(int i=4;i>=0;i--){
+   for(int i=3;i>=0;i--){
     if(a[i]>b[i])
         return 1;
     else if(a[i]<b[i])
