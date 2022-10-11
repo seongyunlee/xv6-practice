@@ -19,7 +19,6 @@ double weight[40]={
     88817, 71054, 56843, 45474, 36379, 29103, 23283, 18626, 14901, 11920, 9536, 7629, 6103, 4882, 3906, 3124, 2500, 2000, 1600, 1280, 1024, 819, 655, 524, 419, 335, 268, 214, 171, 137, 109, 87, 70, 56, 45, 36, 28, 23, 18, 14
 };
 
-
 int nextpid = 1;
 extern void forkret(void);
 extern void trapret(void);
@@ -722,6 +721,10 @@ void printUintArrayFormatted(uint *x){
         cprintf("0");
       cprintf("%d",x[i]);
       cnt+=9;
+    }
+    else if(start==0 &&i==0){
+      cprintf("0");
+      cnt=1;
     }
   }
   for(int s=0;s<37-cnt;s++)
