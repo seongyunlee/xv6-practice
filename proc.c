@@ -28,6 +28,7 @@ static void wakeup1(void *chan);
 void add_vruntime(uint* p, uint elapsed);
 int compare_vruntime(uint* a, uint* b);
 void set_wokenup_vruntime(uint *woken,uint *min, int nice);
+void set_runtimes(struct proc *p);
 
 void
 pinit(void)
@@ -287,9 +288,7 @@ exit(void)
     }
   }
  //
-  add_vruntime(p->vruntime,(uint)(((double)(ticks-uproc_start_time))*(1024/weight[p->nice]*1000))); //
-  add_vruntime(p->scaled_runtime,(uint)(((double)(ticks-uproc_start_time))*(1000/weight[p->nice]))); //
-  add_vruntime(p->runtime,(ticks-uproc_start_time)*1000);
+  set_runtimes(p);
 
   // Jump into the scheduler, never to return.
   curproc->state = ZOMBIE;
@@ -316,15 +315,15 @@ void sys_sleepEnd(struct proc *p){
   return;
 }
 
-void sys_sleepStart(struct proc *p){
-  
-  add_vruntime(p->vruntime,(uint)(((double)(ticks-uproc_start_time))*(1024/weight[p->nice]*1000))); //
-  add_vruntime(p->scaled_runtime,(uint)(((double)(ticks-uproc_start_time))*(1000/weight[p->nice]))); //
-  add_vruntime(p->runtime,(uint)(ticks-uproc_start_time)*1000);
-  return;
+void sys_sleepStart(struct proc *p){ 
+  set_runtimes(p);
 }
 
-
+void set_runtimes(struct proc *p){
+  add_vruntime(p->vruntime,(uint)(((double)(ticks-uproc_start_time))*(1024/weight[p->nice]*1000))); //
+  add_vruntime(p->scaled_runtime,(uint)(((double)(ticks-uproc_start_time))*(1000/weight[p->nice]))); //
+  add_vruntime(p->runtime,(uint)(ticks-uproc_start_time+1)*1000);
+}
 
 // Wait for a child process to exit and return its pid.
 // Return -1 if this process has no children.
@@ -464,9 +463,7 @@ yield(void)
   struct proc *p= myproc();
   if(p->time_slice<=(ticks-uproc_start_time)){
     p->state = RUNNABLE;
-    add_vruntime(p->vruntime,(uint)(((double)(ticks-uproc_start_time))*(1024/weight[p->nice]*1000))); //
-    add_vruntime(p->scaled_runtime,(uint)(((double)(ticks-uproc_start_time))*(1000/weight[p->nice]))); //
-    add_vruntime(p->runtime,(ticks-uproc_start_time)*1000);
+    set_runtimes(p);
     sched();
    }
   release(&ptable.lock);
