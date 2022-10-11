@@ -309,7 +309,6 @@ void sys_sleepEnd(struct proc *p){
     if(compare_vruntime(min_p->vruntime,pp->vruntime))
       min_p=pp;
   }
-  cprintf("min process is %d\n",min_p->pid);
   set_wokenup_vruntime(p->vruntime,min_p->vruntime,p->nice);
 
   release(&ptable.lock);
