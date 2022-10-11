@@ -775,7 +775,7 @@ void ps(int pid){
     char s1[21]="                    "; //empty string 20;
 
     acquire(&ptable.lock);
-    cprintf("name\t\tpid\tstate       priority\truntime/weight   %sruntime          %svruntime         %stick %d\n",s1,s1,s1,ticks*1000);
+    cprintf("name\t\tpid\tstate       priority\t    runtime/weight   %sruntime          %svruntime         %stick %d\n",s1,s1,s1,ticks*1000);
     for(p=ptable.proc;p<&ptable.proc[NPROC];p++){
         if(pid==0 || p->pid == pid){
             if(p->pid!=0){
