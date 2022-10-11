@@ -8,10 +8,10 @@ int main(){
     printf(1,"Process(:%d) for test is on running\n",getpid());
     
     if(c_pid==0){
-        setnice(getpid(),39);
+        setnice(getpid(),5);
     }
     else{
-        setnice(getpid(),39);
+        setnice(getpid(),21);
     }
     int cnt=0;
     int j=0;
