@@ -772,7 +772,7 @@ void ps(int pid){
 
     struct proc *p;
     
-    char* s1[21]="                    "; //empty string 20;
+    char s1[21]="                    "; //empty string 20;
 
     acquire(&ptable.lock);
     cprintf("name\t\tpid\tstate       priority\t\truntime/weight   %sruntime          %svruntime         %stick %d\n",s1,s1,s1,ticks*1000);
