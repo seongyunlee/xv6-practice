@@ -53,6 +53,8 @@ struct proc {
   char name[16];               // Process name (debugging)
   int nice;                    // Schduling Priority
   uint vruntime[4];                // virutal Runtime (milli tick)
+  uint runtime[4];            //actual runtime (milli tick)
+  uint scaled_runtime[4];    //runtime/weight;
   int time_slice;               // time_slice given by scheduler (tick)
 };
 

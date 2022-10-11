@@ -26,7 +26,11 @@ extern void trapret(void);
 
 static void wakeup1(void *chan);
 
-void add_vruntime(int* p, uint elapsed);
+void add_vruntime(uint* p, uint elapsed);
+void set
+int compare_vruntime(uint* a, uint* b);
+void set_wokenup_vruntime(uint *woken,uint *min, int nice);
+
 void
 pinit(void)
 {
@@ -96,7 +100,9 @@ found:
   p->state = EMBRYO;
   p->pid = nextpid++;
   p->nice = 20;
-  memset(p->vruntime,0,sizeof(uint))
+  memset(p->vruntime,0,sizeof(uint)*4);
+  memset(p->scaled_runtime,0,sizeof(uint)*4);
+  memset(p->runtime,0,sizeof(uint)*4);
   p->time_slice=0;
   release(&ptable.lock);
 
@@ -262,20 +268,16 @@ exit(void)
   if(curproc->parent->state==SLEEPING && curproc->parent->chan==curproc->parent){
     wakeup1(curproc->parent);
     //set woken process's vruntime
-    int min_vrunTime=curproc->parent->vruntime; // ensure min_p would not be null;
-    uint min_upper_vruntime=curproc->parent->upper_vruntime;
+    struct proc *min_p; // process which has minimum vruntime
+    min_p=p;
     struct proc *pp;
     for(pp= ptable.proc; pp<&ptable.proc[NPROC]; pp++){
       if(pp->state != RUNNABLE)
         continue;
-      if(min_upper_vruntime > pp->upper_vruntime ||( min_upper_vruntime==pp->upper_vruntime&&min_vrunTime > pp->vruntime)){
-        min_vrunTime = pp->vruntime;
-        min_upper_vruntime = pp->vruntime;
-      }
+      if(compare_vruntime(min_p->vruntime,pp->vruntime))
+        min_p=pp;
     }
-    min_vrunTime-=1024/weight[curproc->parent->pid]; // not consider overflow;
-    curproc->parent->vruntime=min_vrunTime>0?min_vrunTime:0;
-    curproc->parent->upper_vruntime=min_upper_vruntime;
+    set_wokenup_vruntime(curproc->parent->vruntime,min_p->vruntime,curproc->parent->nice);
   }
 
   // Pass abandoned children to init.
@@ -286,7 +288,10 @@ exit(void)
         wakeup1(initproc);
     }
   }
-  add_vruntime(p->vruntime,(ticks-uproc_start_time)*((double)1024/weight[p->nice]*(double)1000)); //
+  add_vruntime(p->vruntime,(uint)((ticks-uproc_start_time)*(1024/weight[p->nice]*1000))); //
+  add_vruntime(p->scaled_runtime,(uint)((ticks-uproc_start_time)*(1000/weight[p->nice]))); //
+  add_vruntime(p->runtime,(ticks-uproc_start_time)*1000); //
+
   // Jump into the scheduler, never to return.
   curproc->state = ZOMBIE;
   sched();
@@ -297,23 +302,22 @@ void sys_sleepEnd(struct proc *p){
   
   acquire(&ptable.lock);
 
-  uint min_vrunTime=p->vruntime; // ensure min_p would not be null;
-  uint min_upper_vruntime=p->upper_vruntime;
+  struct proc *min_p; // process which has minimum vruntime
+  min_p=p;
   struct proc *pp;
   for(pp= ptable.proc; pp<&ptable.proc[NPROC]; pp++){
     if(pp->state != RUNNABLE)
       continue;
-    if(min_upper_vruntime > pp->upper_vruntime ||( min_upper_vruntime==pp->upper_vruntime && min_vrunTime > pp->vruntime)){
-      min_vrunTime = pp->vruntime;
-      min_upper_vruntime=pp->upper_vruntime;
-    }
+    if(compare_vruntime(min_p->vruntime,pp->vruntime))
+      min_p=pp;
   }
-  min_vrunTime-=1024/weight[p->pid];
-  p->vruntime=min_vrunTime>0?min_vrunTime:0;
-  p->upper_vruntime=min_upper_vruntime;//not consider overflow;
+  set_wokenup_vruntime(p->vruntime,min_p->vruntime,p->nice);
+
   release(&ptable.lock);
   return;
 }
+
+
 
 
 // Wait for a child process to exit and return its pid.
@@ -385,9 +389,7 @@ scheduler(void)
       if(p->state != RUNNABLE)
         continue;
 
-      uint min_vrunTime=p->vruntime; // ensure min_p would not be null;
-      uint min_upper_vruntime=p->upper_vruntime;
-      struct proc *min_p;
+      struct proc *min_p; // process which has minimum vruntime
       double total_weight=0;
       min_p=p;
       struct proc *pp;
@@ -395,11 +397,8 @@ scheduler(void)
         if(pp->state != RUNNABLE)
           continue;
         total_weight+=weight[pp->nice];
-        if(min_upper_vruntime > pp->upper_vruntime || ( min_upper_vruntime == pp->upper_vruntime && min_vrunTime > pp->vruntime)){
+        if(compare_vruntime(min_p->vruntime,pp->vruntime))
           min_p=pp;
-          min_vrunTime = pp->vruntime;
-          min_upper_vruntime=pp->upper_vruntime;
-        }
       }
       //cprintf("total weight of runnable %d\n",(int)total_weight);
       min_p->time_slice=(int)(10*(weight[min_p->nice])/total_weight)+1;
@@ -459,7 +458,9 @@ yield(void)
   struct proc *p= myproc();
   if(p->time_slice<=(ticks-uproc_start_time)){
     p->state = RUNNABLE;
-    add_vruntime(p->vruntime,(ticks-uproc_start_time)*((double)1024/weight[p->nice]*(double)1000));
+    add_vruntime(p->vruntime,(uint)((ticks-uproc_start_time)*(1024/weight[p->nice]*1000))); //
+    add_vruntime(p->scaled_runtime,(uint)((ticks-uproc_start_time)*(1000/weight[p->nice]))); //
+    add_vruntime(p->runtime,(ticks-uproc_start_time)*1000); //
     sched();
    }
   release(&ptable.lock);
@@ -509,7 +510,9 @@ sleep(void *chan, struct spinlock *lk)
     acquire(&ptable.lock);  //DOC: sleeplock1
     release(lk);
   }
-  add_vruntime(p,(ticks-uproc_start_time)*((double)1024/weight[p->nice]*(double)1000));
+  add_vruntime(p->vruntime,(uint)((ticks-uproc_start_time)*(1024/weight[p->nice]*1000))); //
+  add_vruntime(p->scaled_runtime,(uint)((ticks-uproc_start_time)*(1000/weight[p->nice]))); //
+  add_vruntime(p->runtime,(ticks-uproc_start_time)*1000); //
   // Go to sleep.
   p->chan = chan;
   p->state = SLEEPING;
@@ -622,7 +625,14 @@ getpname(int pid){
   release(&ptable.lock);
   return -1;
 }
-
+//set woken pointer(4 uint array) to min-unit_vruntime
+void set_wokenup_vruntime(uint *woken,uint *min,int nice){
+    uint unit_vruntime=(uint)(1024/weight[nice]);
+    woken[0]= unit_vruntime<min[0]?min[0]-unit_vruntime:0;
+    for(int i=1;i<4;i++){
+      woken[i]=min[i];
+    }
+}
 //compare a,b return 1 if a>b else 0
 int compare_vruntime(uint* a,uint* b){
    for(int i=4;i>=0;i--){
@@ -633,12 +643,13 @@ int compare_vruntime(uint* a,uint* b){
    }
    return 0;
 }
-void add_vruntime(int  *p,uint elapsed){
+//add elapsed to 4 uint array;
+void add_vruntime(uint  *p,uint elapsed){
     assert(elapsed<=999999999);
     for(int i=0;i<4;i++){
-        if(999999999-p[i]<elasped){
+        if(999999999-p[i]<elapsed){
             p[i]=elapsed-(999999999-p[i]);
-            elasped=1;   
+            elapsed=1;   
         }
         else
             p[i]+=elapsed;
@@ -676,6 +687,59 @@ int setnice(int pid,int new_nice){
     release(&ptable.lock);
     return -1;  
 }
+void printUintArrayFormatted(uint *x){
+  int start=0;
+  int cnt=0;
+  for(int i=3;i>=0;i--){
+    if(start==0 && x[i]!=0){
+      cprintf("%d",x[i]);//assert(x<=INT_MAX);
+      uint a=x[i];
+      //cnt+=len(str(x[i]))
+      if(a==0)
+        cnt++;
+      while(a>0){
+        cnt++;
+        a/=10;
+      }
+      start=1;
+    }
+    else if(start!=0){
+      int zeros=9;
+      uint a=x[i];
+      //cnt+=len(str(x[i]))
+      if(a==0)
+        zeros=9;
+      while(a>0){
+        zeros--;
+        a/=10;
+      }
+      for(;zeros>0;zeros--)
+        cprintf("0");
+      cprintf("%d",x[i]);
+      cnt+=9;
+    }
+  }
+  for(int s=0;s<18-cnt;s++)
+    cprintf(" ");
+}
+/*
+void printunsignedlonglong(unsigned long long x) {
+	char n[19];
+	int idx = 0;
+	while (1) {
+		n[idx++] = (int)(x % 10);
+		x = x / 10;
+		if (x == 0)
+			break;
+	}
+	for (int i = idx - 1; i >= 0; i--) {
+		cprintf("%d", n[i]);
+	}
+	for (int i = 19 - idx; i > 0; i--) {
+		cprintf(" ");
+	}
+}
+*/
 void printIntFormatted(int x){
   x<<=1;
   x=(int)((uint)x>>1);
@@ -696,24 +760,6 @@ void printIntFormatted(int x){
     k--;
   }
 }
-/*
-void printunsignedlonglong(unsigned long long x) {
-	char n[19];
-	int idx = 0;
-	while (1) {
-		n[idx++] = (int)(x % 10);
-		x = x / 10;
-		if (x == 0)
-			break;
-	}
-	for (int i = idx - 1; i >= 0; i--) {
-		cprintf("%d", n[i]);
-	}
-	for (int i = 19 - idx; i > 0; i--) {
-		cprintf(" ");
-	}
-}
-*/
 void ps(int pid){
     static char *states[] = {
     [UNUSED]    "UNUSED  ",
@@ -733,9 +779,9 @@ void ps(int pid){
             if(p->pid!=0){
                 cprintf("%s\t\t%d\t%s    ",p->name,p->pid,states[p->state]);
                 printIntFormatted(p->nice);//priority
-                printIntFormatted(p->vruntime/20);//runtime/weight (millitick)
-                printIntFormatted(p->vruntime/20*weight[p->nice]);
-                printIntFormatted(p->vruntime);
+                printUintArrayFormatted(p->scaled_runtime);//runtime/weight (millitick)
+                printUintArrayFormatted(p->runtime);
+                printUintArrayFormatted(p->vruntime);
                 cprintf("\n");
             }
         }
