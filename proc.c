@@ -649,9 +649,10 @@ void add_vruntime(uint  *p,uint elapsed){
             p[i]=elapsed-(999999999-p[i]);
             elapsed=1;   
         }
-        else
+        else{
             p[i]+=elapsed;
             elapsed=0;
+        }
     }
 }
 int getnice(int pid){
