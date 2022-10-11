@@ -301,7 +301,7 @@ void sys_sleepEnd(struct proc *p){
   acquire(&ptable.lock);
 
   struct proc *min_p; // process which has minimum vruntime
-  min_p=ptable.proc;
+  min_p=p;
   struct proc *pp;
   for(pp= ptable.proc; pp<&ptable.proc[NPROC]; pp++){
     if(pp==p || pp->state != RUNNABLE)
