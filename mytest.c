@@ -23,11 +23,12 @@ int main(){
                 cnt++;
             i++;
         }
-        if(c_pid==0 && j==20){
+        if(c_pid==0 && j==50){
             printf(1,"%d sleeps\n",getpid());
             sleep(100);
             printf(1,"%d is waked up\n",getpid());
             ps(0);
+            exec("./mytest.o",0);
         }
         j++;
         printf(1,"%d : %d/100\n",getpid(),j);
