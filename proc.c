@@ -464,9 +464,9 @@ yield(void)
   struct proc *p= myproc();
   if(p->time_slice<=(ticks-uproc_start_time)){
     p->state = RUNNABLE;
-    add_vruntime(p->vruntime,(uint)((ticks-uproc_start_time)*(1024/weight[p->nice]*1000))); //
-    add_vruntime(p->scaled_runtime,(uint)((ticks-uproc_start_time)*(1000/weight[p->nice]))); //
-    add_vruntime(p->runtime,(ticks-uproc_start_time)*1000); //
+    add_vruntime(p->vruntime,(uint)(((double)(ticks-uproc_start_time))*(1024/weight[p->nice]*1000))); //
+    add_vruntime(p->scaled_runtime,(uint)(((double)(ticks-uproc_start_time))*(1000/weight[p->nice]))); //
+    add_vruntime(p->runtime,(ticks-uproc_start_time)*1000);
     sched();
    }
   release(&ptable.lock);
