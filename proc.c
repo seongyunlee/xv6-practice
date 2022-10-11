@@ -772,7 +772,7 @@ void ps(int pid){
 
     struct proc *p;
     
-    char s1[21]="                             "; //empty string 29;
+    char s1[30]="                             "; //empty string 29;
 
     acquire(&ptable.lock);
     cprintf("name\t\tpid\tstate       priority\t    runtime/weight  runtime         vruntime%stick %d\n",s1,ticks*1000);
