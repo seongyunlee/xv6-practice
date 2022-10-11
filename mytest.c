@@ -18,7 +18,7 @@ int main(){
     ps(0);
     while(j<100){
         int i = 0;
-        while(i<10000000){
+        while(i<100000000){
             if(i%13434==0)
                 cnt++;
             i++;
