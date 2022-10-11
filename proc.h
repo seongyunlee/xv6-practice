@@ -52,8 +52,7 @@ struct proc {
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
   int nice;                    // Schduling Priority
-  uint upper_vruntime;
-  uint vruntime;                // virutal Runtime (milli tick)
+  uint vruntime[4];                // virutal Runtime (milli tick)
   int time_slice;               // time_slice given by scheduler (tick)
 };
 

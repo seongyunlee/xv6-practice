@@ -26,7 +26,7 @@ extern void trapret(void);
 
 static void wakeup1(void *chan);
 
-void add_vruntime(struct proc *p, uint elapsed);
+void add_vruntime(int* p, uint elapsed);
 void
 pinit(void)
 {
@@ -96,9 +96,8 @@ found:
   p->state = EMBRYO;
   p->pid = nextpid++;
   p->nice = 20;
-  p->vruntime = 0;
+  memset(p->vruntime,0,sizeof(uint))
   p->time_slice=0;
-  p->upper_vruntime = 0;
   release(&ptable.lock);
 
   // Allocate kernel stack.
@@ -263,7 +262,7 @@ exit(void)
   if(curproc->parent->state==SLEEPING && curproc->parent->chan==curproc->parent){
     wakeup1(curproc->parent);
     //set woken process's vruntime
-    uint min_vrunTime=curproc->parent->vruntime; // ensure min_p would not be null;
+    int min_vrunTime=curproc->parent->vruntime; // ensure min_p would not be null;
     uint min_upper_vruntime=curproc->parent->upper_vruntime;
     struct proc *pp;
     for(pp= ptable.proc; pp<&ptable.proc[NPROC]; pp++){
@@ -287,7 +286,7 @@ exit(void)
         wakeup1(initproc);
     }
   }
-  add_vruntime(p,(ticks-uproc_start_time)*((double)1024/weight[p->nice]*(double)1000)); //
+  add_vruntime(p->vruntime,(ticks-uproc_start_time)*((double)1024/weight[p->nice]*(double)1000)); //
   // Jump into the scheduler, never to return.
   curproc->state = ZOMBIE;
   sched();
@@ -460,7 +459,7 @@ yield(void)
   struct proc *p= myproc();
   if(p->time_slice<=(ticks-uproc_start_time)){
     p->state = RUNNABLE;
-    add_vruntime(p,(ticks-uproc_start_time)*((double)1024/weight[p->nice]*(double)1000));
+    add_vruntime(p->vruntime,(ticks-uproc_start_time)*((double)1024/weight[p->nice]*(double)1000));
     sched();
    }
   release(&ptable.lock);
@@ -623,11 +622,27 @@ getpname(int pid){
   release(&ptable.lock);
   return -1;
 }
-void add_vruntime(struct proc *p,uint elapsed){
-    if(__UINT32_MAX__-p->vruntime<elapsed){
-        p->upper_vruntime+=1;
+
+//compare a,b return 1 if a>b else 0
+int compare_vruntime(uint* a,uint* b){
+   for(int i=4;i>=0;i--){
+    if(a[i]>b[i])
+        return 1;
+    else if(a[i]<b[i])
+        return 0;
+   }
+   return 0;
+}
+void add_vruntime(int  *p,uint elapsed){
+    assert(elapsed<=999999999);
+    for(int i=0;i<4;i++){
+        if(999999999-p[i]<elasped){
+            p[i]=elapsed-(999999999-p[i]);
+            elasped=1;   
+        }
+        else
+            p[i]+=elapsed;
     }
-    p->vruntime+=elapsed;
 }
 int getnice(int pid){
     struct proc *p;
