@@ -100,8 +100,7 @@ found:
   p->pid = nextpid++;
   p->nice = 20;
   memset(p->vruntime,0,sizeof(uint)*4);
-  memset(p->scaled_runtime,0,sizeof(uint)*4);
-  memset(p->runtime,0,sizeof(uint)*4);
+  p->runtime=0;
   p->time_slice=0;
   release(&ptable.lock);
 
