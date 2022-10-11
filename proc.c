@@ -719,8 +719,8 @@ void printUintArrayFormatted(uint *x){
       cnt+=9;
     }
   }
-  for(int s=0;s<18-cnt;s++)
-    cprintf("~");
+  for(int s=0;s<37-cnt;s++)
+    cprintf(" ");
 }
 /*
 void printunsignedlonglong(unsigned long long x) {
@@ -772,8 +772,10 @@ void ps(int pid){
 
     struct proc *p;
     
+    char* s1="                    " //empty string 20;
+
     acquire(&ptable.lock);
-    cprintf("name\t\tpid\tstate       priority        runtime/weight  runtime         vruntime         tick %d\n",ticks*1000);
+    cprintf("name\t\tpid\tstate       priority\t\truntime/weight   %sruntime          %svruntime         %stick %d\n",ticks*1000);
     for(p=ptable.proc;p<&ptable.proc[NPROC];p++){
         if(pid==0 || p->pid == pid){
             if(p->pid!=0){
