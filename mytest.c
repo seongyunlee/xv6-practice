@@ -28,7 +28,7 @@ int main(){
             sleep(100);
             printf(1,"%d is waked up\n",getpid());
             ps(0);
-            exec("./mytest.o",0);
+            exec("mytest",0);
         }
         j++;
         printf(1,"%d : %d/100\n",getpid(),j);
