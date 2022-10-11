@@ -320,7 +320,7 @@ void sys_sleepStart(struct proc *p){
   
   add_vruntime(p->vruntime,(uint)(((double)(ticks-uproc_start_time))*(1024/weight[p->nice]*1000))); //
   add_vruntime(p->scaled_runtime,(uint)(((double)(ticks-uproc_start_time))*(1000/weight[p->nice]))); //
-  add_vruntime(p->runtime,(ticks-uproc_start_time)*1000);
+  add_vruntime(p->runtime,(uint)(ticks-uproc_start_time)*1000);
   return;
 }
 
