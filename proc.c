@@ -646,7 +646,7 @@ int compare_vruntime(uint* a,uint* b){
 void add_vruntime(uint  *p,uint elapsed){
     for(int i=0;i<4;i++){
         if(999999999-p[i]<elapsed){
-            p[i]=elapsed-(999999999-p[i]);
+            p[i]=elapsed-(999999999-p[i])-1;
             elapsed=1;   
         }
         else{
