@@ -288,7 +288,7 @@ exit(void)
     }
   }
  //
-  set_runtimes(p);
+  set_runtimes(curproc);
 
   // Jump into the scheduler, never to return.
   curproc->state = ZOMBIE;
@@ -406,7 +406,7 @@ scheduler(void)
           min_p=pp;
       }
       //cprintf("total weight of runnable %d\n",(int)total_weight);
-      min_p->time_slice=(int)(10*(weight[min_p->nice])/total_weight)+1;
+      min_p->time_slice=(int)(10*weight[min_p->nice]/total_weight)+1;
       //cprintf("Give %d time slice to %d\n",min_p->time_slice,min_p->pid);
 
       // Switch to chosen process.  It is the process's job
@@ -461,7 +461,7 @@ yield(void)
 {
   acquire(&ptable.lock);  //DOC: yieldlock
   struct proc *p= myproc();
-  if(p->time_slice<=(ticks-uproc_start_time)){
+  if(p->time_slice<(ticks-uproc_start_time)){
     p->state = RUNNABLE;
     set_runtimes(p);
     sched();
