@@ -6,7 +6,6 @@
 #include "x86.h"
 #include "proc.h"
 #include "spinlock.h"
-#include "assert.h"
 
 struct {
   struct spinlock lock;
@@ -645,7 +644,6 @@ int compare_vruntime(uint* a,uint* b){
 }
 //add elapsed to 4 uint array;
 void add_vruntime(uint  *p,uint elapsed){
-    assert(elapsed<=999999999);
     for(int i=0;i<4;i++){
         if(999999999-p[i]<elapsed){
             p[i]=elapsed-(999999999-p[i]);
