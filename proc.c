@@ -28,7 +28,6 @@ extern void trapret(void);
 static void wakeup1(void *chan);
 
 void add_vruntime(uint* p, uint elapsed);
-void set
 int compare_vruntime(uint* a, uint* b);
 void set_wokenup_vruntime(uint *woken,uint *min, int nice);
 
