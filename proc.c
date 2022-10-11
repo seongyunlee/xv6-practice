@@ -651,6 +651,7 @@ void add_vruntime(uint  *p,uint elapsed){
         }
         else
             p[i]+=elapsed;
+            elapsed=0;
     }
 }
 int getnice(int pid){
@@ -718,7 +719,7 @@ void printUintArrayFormatted(uint *x){
     }
   }
   for(int s=0;s<18-cnt;s++)
-    cprintf(" ");
+    cprintf("~");
 }
 /*
 void printunsignedlonglong(unsigned long long x) {
