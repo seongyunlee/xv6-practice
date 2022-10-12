@@ -304,7 +304,7 @@ void sys_sleepEnd(struct proc *p){
   min_p=0;
   struct proc *pp;
   for(pp= ptable.proc; pp<&ptable.proc[NPROC]; pp++){
-    if(pp=p || pp->state != RUNNABLE)
+    if(pp==p || pp->state != RUNNABLE)
       continue;
     if(min_p==0 || compare_vruntime(min_p->vruntime,pp->vruntime))
       min_p=pp;

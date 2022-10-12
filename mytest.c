@@ -5,13 +5,16 @@
 int main(){
     printf(1,"test program start\n");
     int c_pid=fork();
+    if(c_pid==0){
+        fork();
+    }
     printf(1,"Process(:%d) for test is on running\n",getpid());
     
     if(c_pid==0){
-        setnice(getpid(),39);
+        setnice(getpid(),10);
     }
     else{
-        setnice(getpid(),0);
+        setnice(getpid(),10);
     }
     int cnt=0;
     int j=0;
@@ -23,9 +26,9 @@ int main(){
                 cnt++;
             i++;
         }
-        if(c_pid==0 && j==50){
+        if(c_pid=!0 && j==50){
             printf(1,"%d sleeps\n",getpid());
-            sleep(100);
+            sleep(300);
             printf(1,"%d is waked up\n",getpid());
         }
         printf(1,"%d : %d/100\n",getpid(),j);
