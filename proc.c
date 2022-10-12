@@ -623,7 +623,7 @@ getpname(int pid){
 //set woken pointer(4 uint array) to min-unit_vruntime
 void set_wokenup_vruntime(uint *woken,uint *min,int nice){
     double vruntime_unit_ticks=1024/weight[nice];
-    uint unit_vruntime = vruntime_unit_ticks > 0 ? (uint)vruntime_unit_ticks : 1;
+    uint unit_vruntime = vruntime_unit_ticks >= 1 ? (uint)vruntime_unit_ticks : 1;
     woken[0]= unit_vruntime<min[0]?min[0]-unit_vruntime:0;
     for(int i=1;i<4;i++){
       woken[i]=min[i];
