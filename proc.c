@@ -264,18 +264,18 @@ exit(void)
 
   // Parent might be sleeping in wait().
   if(curproc->parent->state==SLEEPING && curproc->parent->chan==curproc->parent){
-    wakeup1(curproc->parent);
     //set woken process's vruntime
-    struct proc *min_p; // process which has minimum vruntime
-    min_p=curproc->parent;
+    struct proc *min_p=0; // process which has minimum vruntime
     struct proc *pp;
     for(pp= ptable.proc; pp<&ptable.proc[NPROC]; pp++){
       if(pp->state != RUNNABLE)
         continue;
-      if(compare_vruntime(min_p->vruntime,pp->vruntime))
+      if(min_p==0||compare_vruntime(min_p->vruntime,pp->vruntime))
         min_p=pp;
     }
-    set_wokenup_vruntime(curproc->parent->vruntime,min_p->vruntime,curproc->parent->nice);
+    if(min_p!=0)
+      set_wokenup_vruntime(curproc->parent->vruntime,min_p->vruntime,curproc->parent->nice);
+    wakeup1(curproc->parent);
   }
 
   // Pass abandoned children to init.
@@ -301,12 +301,12 @@ void sys_sleepEnd(struct proc *p){
   acquire(&ptable.lock);
 
   struct proc *min_p; // process which has minimum vruntime
-  min_p=p;
+  min_p=0;
   struct proc *pp;
   for(pp= ptable.proc; pp<&ptable.proc[NPROC]; pp++){
-    if(pp->state != RUNNABLE)
+    if(pp=p || pp->state != RUNNABLE)
       continue;
-    if(compare_vruntime(min_p->vruntime,pp->vruntime))
+    if(min_p==0 || compare_vruntime(min_p->vruntime,pp->vruntime))
       min_p=pp;
   }
   set_wokenup_vruntime(p->vruntime,min_p->vruntime,p->nice);
