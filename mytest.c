@@ -28,7 +28,7 @@ int main(){
         }
         if(c_pid!=0 && j==50){
             printf(1,"%d sleeps\n",getpid());
-            sleep(300);
+            sleep(1000);
             printf(1,"%d is waked up\n",getpid());
         }
         printf(1,"%d : %d/100\n",getpid(),j);
