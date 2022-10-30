@@ -5,9 +5,6 @@
 int main(){
     printf(1,"test program start\n");
     int c_pid=fork();
-    if(c_pid==0){
-        fork();
-    }
     printf(1,"Process(:%d) for test is on running\n",getpid());
     
     if(c_pid==0){
