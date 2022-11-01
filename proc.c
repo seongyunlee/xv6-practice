@@ -688,7 +688,7 @@ int setnice(int pid,int new_nice){
     return -1;  
 }
 uint mmap(uint addr, int length, int prot, int flags, int fd, int offset){
-  return 1;
+
 }
 void printUintArrayFormatted(uint *x){
   int start=0;

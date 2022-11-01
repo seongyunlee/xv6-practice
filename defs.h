@@ -124,6 +124,7 @@ int             getpname(int);
 int             getnice(int);
 int             setnice(int pid,int new_nice);
 void            ps(int);
+uint            mmap(uint addr, int length, int prot, int flags, int fd, int offset);
 
 // swtch.S
 void            swtch(struct context**, struct context*);
