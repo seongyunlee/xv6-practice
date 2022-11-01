@@ -130,7 +130,7 @@ int sys_mmap(void){
   int flags;
   int fd;
   int offset;
-  if(argint(0,(*int)&addr)<0 || argint(1,&length)<0 || argint(2,&prot)<0 || argint(3,&flags)<0|| argint(4,&fd)<0 || argint(5,&offset)<0){
+  if(argint(0,(int*)&addr)<0 || argint(1,&length)<0 || argint(2,&prot)<0 || argint(3,&flags)<0|| argint(4,&fd)<0 || argint(5,&offset)<0){
     mmap(addr,length,prot,flags,fd,offset);
   }
 }
