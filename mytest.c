@@ -7,5 +7,5 @@ int main(){
     printf(1,"test start");
     //uint x =0x4000000;
     //printf(1,"%c",x);
-    return 0;
+    return 1;
 }
