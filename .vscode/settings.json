@@ -23,5 +23,6 @@
         "algorithm": "c",
         "complex": "c",
         "__config": "c"
-    }
+    },
+    "C_Cpp.errorSquiggles": "Disabled"
 }
