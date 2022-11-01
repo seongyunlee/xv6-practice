@@ -688,11 +688,7 @@ int setnice(int pid,int new_nice){
     return -1;  
 }
 uint mmap(uint addr, int length, int prot, int flags, int fd, int offset){
-  void* x = (void*) 0x4000000;
-  void *pa = kalloc();
-  memset(pa,0,PGSIZE);
-  mappages(myproc()->pgdir,x, 4, pa, PTE_W|PTE_U);
-  return 1;
+  return testmmap();
 }
 void printUintArrayFormatted(uint *x){
   int start=0;
