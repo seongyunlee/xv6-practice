@@ -9,6 +9,7 @@
 
 extern char data[];  // defined by kernel.ld
 pde_t *kpgdir;  // for use in scheduler()
+static struct mmap_area mmap_array[64];
 
 // Set up CPU's kernel segment descriptors.
 // Run once on entry on each CPU.
@@ -383,6 +384,24 @@ copyout(pde_t *pgdir, uint va, void *p, uint len)
     va = va0 + PGSIZE;
   }
   return 0;
+}
+uint 
+allocmmap(uint addr, int length, int prot, int flags, int fd, int offset){
+  struct mmap_area *ma = mmap_array;
+  for(;ma<&mmap_array[64];ma++){
+    if(ma->addr == 0)
+      break;
+  }
+  if(ma==&mmap_array[64])
+    return -1;
+  //set mmap area info
+  ma->addr=addr;
+  ma->length=length;
+  ma->offset=offset;
+  ma->prot= prot;
+  ma->flags= flags;
+  ma->p= myproc();
+  return addr;
 }
 
 //PAGEBREAK!

@@ -13,6 +13,7 @@ struct {
 } ptable;
 
 static struct proc *initproc;
+
 int uproc_start_time;
 
 double weight[40]={
@@ -102,7 +103,6 @@ found:
   memset(p->vruntime,0,sizeof(uint)*4);
   p->runtime=0;
   p->time_slice=0;
-  p->mmap_bound= p->sz-2*PGSIZE;
   release(&ptable.lock);
 
   // Allocate kernel stack.
@@ -688,7 +688,7 @@ int setnice(int pid,int new_nice){
     return -1;  
 }
 uint mmap(uint addr, int length, int prot, int flags, int fd, int offset){
-  return 1;
+
 }
 void printUintArrayFormatted(uint *x){
   int start=0;
