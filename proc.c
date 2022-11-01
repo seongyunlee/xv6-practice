@@ -687,6 +687,9 @@ int setnice(int pid,int new_nice){
     release(&ptable.lock);
     return -1;  
 }
+uint mmap(uint addr, int length, int prot, int flags, int fd, int offset){
+  return 1;
+}
 void printUintArrayFormatted(uint *x){
   int start=0;
   int cnt=0;
@@ -726,24 +729,7 @@ void printUintArrayFormatted(uint *x){
   for(int s=0;s<37-cnt;s++)
     cprintf(" ");
 }
-/*
-void printunsignedlonglong(unsigned long long x) {
-	char n[19];
-	int idx = 0;
-	while (1) {
-		n[idx++] = (int)(x % 10);
-		x = x / 10;
-		if (x == 0)
-			break;
-	}
-	for (int i = idx - 1; i >= 0; i--) {
-		cprintf("%d", n[i]);
-	}
-	for (int i = 19 - idx; i > 0; i--) {
-		cprintf(" ");
-	}
-}
-*/
+
 void printIntFormatted(int x){
   x<<=1;
   x=(int)((uint)x>>1);
