@@ -56,7 +56,7 @@ struct proc {
   uint vruntime[4];                // virutal Runtime (milli tick)
   uint runtime;            //actual runtime (milli tick)
   int time_slice;               // time_slice given by scheduler (tick)
-  struct mmap_area mmap_array[64];
+  struct mmap_area *mmap_array[64];
   uint mmap_bound;
 };
 
