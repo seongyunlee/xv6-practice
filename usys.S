@@ -33,4 +33,5 @@ SYSCALL(getpname)
 SYSCALL(getnice)
 SYSCALL(setnice)
 SYSCALL(ps)
+SYSCALL(mmap)
 

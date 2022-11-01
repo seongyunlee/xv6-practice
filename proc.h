@@ -32,6 +32,7 @@ struct context {
   uint eip;
 };
 
+
 enum procstate { UNUSED, EMBRYO, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };
 
 extern double weight[40];
@@ -55,6 +56,19 @@ struct proc {
   uint vruntime[4];                // virutal Runtime (milli tick)
   uint runtime;            //actual runtime (milli tick)
   int time_slice;               // time_slice given by scheduler (tick)
+  struct mmap_area mmap_array[64];
+  uint mmap_bound;
+};
+
+
+struct mmap_area{
+  struct file *f;
+  uint addr;
+  int length;
+  int offset;
+  int prot;
+  int flags;
+  struct proc *p;
 };
 
 void sys_sleepEnd(struct proc *p);

@@ -1,0 +1,26 @@
+{
+    "files.associations": {
+        "x86.h": "c",
+        "types.h": "c",
+        "defs.h": "c",
+        "spinlock.h": "c",
+        "proc.h": "c",
+        "mmu.h": "c",
+        "memlayout.h": "c",
+        "param.h": "c",
+        "user.h": "c",
+        "stat.h": "c",
+        "__bit_reference": "c",
+        "__string": "c",
+        "cstring": "c",
+        "__locale": "c",
+        "atomic": "c",
+        "cstdlib": "c",
+        "locale": "c",
+        "new": "c",
+        "ostream": "c",
+        "typeinfo": "c",
+        "algorithm": "c",
+        "complex": "c"
+    }
+}

@@ -102,6 +102,7 @@ found:
   memset(p->vruntime,0,sizeof(uint)*4);
   p->runtime=0;
   p->time_slice=0;
+  p->mmap_bound= p->sz-2*PGSIZE;
   release(&ptable.lock);
 
   // Allocate kernel stack.

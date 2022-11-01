@@ -24,3 +24,4 @@
 #define SYS_getnice 23
 #define SYS_setnice 24
 #define SYS_ps 25
+#define SYS_mmap 26
