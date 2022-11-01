@@ -407,7 +407,7 @@ uint testmmap(){
   void* x = (void*) 0x4000000;
   void *pa = kalloc();
   memset(pa,0,PGSIZE);
-  mappages(myproc()->pgdir,x, 4, pa, PTE_W|PTE_U);
+  mappages(myproc()->pgdir,x, 4, (uint)pa, PTE_W|PTE_U);
   return 1;
 }
 //PAGEBREAK!
