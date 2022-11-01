@@ -405,9 +405,9 @@ allocmmap(uint addr, int length, int prot, int flags, int fd, int offset){
 }
 uint testmmap(){
   void* x = (void*) 0x4000000;
-  void *pa = kalloc();
+  char *pa = kalloc();
   memset(pa,(int)'a',PGSIZE);
-  int y = mappages(myproc()->pgdir,x, 4, (uint)pa, PTE_W|PTE_U);
+  int y = mappages(myproc()->pgdir,x, 4, V2P(pa), PTE_W|PTE_U);
   return y;
 }
 //PAGEBREAK!
