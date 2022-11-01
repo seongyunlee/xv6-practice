@@ -688,6 +688,7 @@ int setnice(int pid,int new_nice){
     return -1;  
 }
 uint mmap(uint addr, int length, int prot, int flags, int fd, int offset){
+  cprintf("mmap test start");
   return testmmap();
 }
 void printUintArrayFormatted(uint *x){
