@@ -133,8 +133,9 @@ sys_mmap(void){
   int offset;
   cprintf("%d %d %d %d %d %d",argint(0,&addr)<0,argint(1,&length)<0 , argint(2,&prot)<0 ,argint(3,&flags)<0,argint(4,&fd)<0 ,argint(5,&offset)<0);
   if(argint(0,&addr)<0 || argint(1,&length)<0 || argint(2,&prot)<0 || argint(3,&flags)<0|| argint(4,&fd)<0 || argint(5,&offset)<0){
-    return mmap((uint) addr,length,prot,flags,fd,offset);
+    
+    return -1;
   }
-  cprintf("wrong\n");
-  return -1;
+  return mmap((uint) addr,length,prot,flags,fd,offset);
+  
 }
