@@ -12,4 +12,8 @@
 #define NBUF         (MAXOPBLOCKS*3)  // size of disk block cache
 #define FSSIZE       1000  // size of file system in blocks
 #define null 0
+#define PROT_READ 0x1
+#define PROT_WRITE 0x2
+#define MAP_ANONYMOUS 0x1
+#define MAP_POPULATE 0x2
 #define MMAPBASE 0x40000000

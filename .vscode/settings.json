@@ -22,7 +22,8 @@
         "typeinfo": "c",
         "algorithm": "c",
         "complex": "c",
-        "__config": "c"
+        "__config": "c",
+        "istream": "c"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }
