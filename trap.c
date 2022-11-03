@@ -82,13 +82,17 @@ trap(struct trapframe *tf)
     struct mmap_area* ma;
     uint trap_addr =rcr2();
     struct proc* p = myproc();
+    int mapped = 0;
     for(ma= mmap_array;ma<&mmap_array[64];ma++){
       if(p != ma->p) continue;
       if(ma->addr+MMAPBASE<=trap_addr && trap_addr<ma->addr+ma->length+MMAPBASE){
         mmapMapping(ma->addr,ma->length,ma->prot,ma->flags,ma->f,ma->offset);
-        lapiceoi();
         break;
       }
+    }
+    if(mapped){
+      lapiceoi();
+      break;
     }
   //PAGEBREAK: 13
   default:
