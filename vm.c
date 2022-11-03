@@ -7,6 +7,7 @@
 #include "proc.h"
 #include "elf.h"
 
+
 extern char data[];  // defined by kernel.ld
 pde_t *kpgdir;  // for use in scheduler()
 static struct mmap_area mmap_array[64];
@@ -402,7 +403,7 @@ allocmmapArea(uint addr, int length, int prot, int flags, int fd, int offset){
   ma->flags= flags;
   ma->p= myproc();
 
-  if(flags&MAP_POPULATE == MAP_POPULATE){
+  if((flags&MAP_POPULATE) == MAP_POPULATE){
     //allocate physical page immediately
     if(mmapMapping(addr,length,prot,flags,fd,offset)<0)
       return -1;
@@ -412,19 +413,19 @@ allocmmapArea(uint addr, int length, int prot, int flags, int fd, int offset){
 //mapping virtual mmap area to physical page
 uint mmapMapping(uint addr, int length, int prot, int flags, int fd, int offset){
   int num_page=(int)length/PGSIZE;
+  int perm=PTE_U;
+  if((prot&PROT_WRITE)==PROT_WRITE)
+    perm=PTE_U|PTE_W;
   for(int i=0;i<num_page;i++){
     char *pa = kalloc();
     if(mappages(myproc()->pgdir,addr+i*PGSIZE,V2P(pa),perm)<0)
       return -1;
-    if(flags|MAP_ANONYMOUS==MAP_ANONYMOUS){
+    if((flags|MAP_ANONYMOUS)==MAP_ANONYMOUS){
       memset(pa,0,PGSIZE);
     }
     else{
-      read(fd,pa,length);
+      fileread(fd,pa,length);
     }
-    int perm=PTE_U;
-    if(prot&PROT_WRITE==PROT_WRITE)
-      perm=PTE_U|PTE_W;
   }
   return 0;
 }
