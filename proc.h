@@ -10,9 +10,7 @@ struct cpu {
   struct proc *proc;           // The process running on this cpu or null
 };
 
-extern struct mmap_area mmap_array[64];
-extern struct cpu cpus[NCPU];
-extern int ncpu;
+
 
 //PAGEBREAK: 17
 // Saved registers for kernel context switches.
@@ -71,7 +69,9 @@ struct mmap_area{
 } _mmap_area;
 
 void sys_sleepEnd(struct proc *p);
-
+extern struct mmap_area mmap_array[64];
+extern struct cpu cpus[NCPU];
+extern int ncpu;
 // Process memory is laid out contiguously, low addresses first:
 //   text
 //   original data and bss
