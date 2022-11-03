@@ -84,7 +84,7 @@ trap(struct trapframe *tf)
     struct proc* p = myproc();
     for(ma= mmap_array;ma<&mmap_array[64];ma++){
       if(p != ma->p) continue;
-      if(ma->add+MMAPBASE<=trap_addr && trap_addr<ma->addr+ma->length+MMAPBASE){
+      if(ma->addr+MMAPBASE<=trap_addr && trap_addr<ma->addr+ma->length+MMAPBASE){
         mmapMapping(ma->addr,ma->length,ma->prot,ma->flags,ma->f,ma->offset);
         lapiceoi();
         break;
