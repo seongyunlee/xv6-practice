@@ -415,7 +415,7 @@ allocmmapArea(uint addr, int length, int prot, int flags, int fd, int offset){
   if(ma->addr != 0)
     return -1;
   //set mmap area info
-  ma->addr=MMAPBASE+addr;
+  ma->addr=addr;
   ma->f = myproc()->ofile[fd];
   ma->length=length;
   ma->offset=offset;
