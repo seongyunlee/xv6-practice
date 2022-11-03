@@ -394,7 +394,7 @@ uint mmapMapping(uint addr, int length, int prot, int flags, int fd, int offset)
     perm=PTE_U|PTE_W;
   for(int i=0;i<num_page;i++){
     char *pa = kalloc();
-    if(mappages(myproc()->pgdir,(void*)addr+i*PGSIZE,PGSIZE,V2P(pa),perm)<0)
+    if(mappages(myproc()->pgdir,(void*)MMAPBASE+addr+i*PGSIZE,PGSIZE,V2P(pa),perm)<0)
       return -1;
     if((flags|MAP_ANONYMOUS)==MAP_ANONYMOUS){
       memset(pa,0,PGSIZE);
