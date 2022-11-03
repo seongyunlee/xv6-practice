@@ -78,12 +78,14 @@ trap(struct trapframe *tf)
     lapiceoi();
     break;
   case T_PGFLT:
-    cprintf("handling page fault");
+    cprintf("handling page fault\n");
     struct mmap_area* ma;
     uint trap_addr =rcr2();
     for(ma= mmap_array;ma<&mmap_array[64];ma++){
       if(ma->addr<=trap_addr && trap_addr<ma->addr+ma->length){
         mmapMapping(ma->addr,ma->length,ma->prot,ma->flags,ma->f,ma->offset);
+        lapiceoi();
+        break;
       }
     }
   //PAGEBREAK: 13
