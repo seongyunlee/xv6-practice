@@ -429,7 +429,7 @@ allocmmapArea(uint addr, int length, int prot, int flags, int fd, int offset){
     if(mmapMapping(addr,length,prot,flags,fd,offset)<0)
       return -1;
   }
-  return addr;
+  return MMAPBASE+addr;
 }
 //PAGEBREAK!
 // Blank page.
