@@ -394,6 +394,7 @@ uint mmapMapping(uint addr, int length, int prot, int flags, struct file* mfile,
     perm=PTE_U|PTE_W;
   for(int i=0;i<num_page;i++){
     char *pa = kalloc();
+    cprintf("mmap va %x",MMAPBASE+addr+i*PGSIZE);
     if(mappages(myproc()->pgdir,(void*)MMAPBASE+addr+i*PGSIZE,PGSIZE,V2P(pa),perm)<0)
       return -1;
     memset(pa,0x0,PGSIZE);
