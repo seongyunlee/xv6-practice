@@ -397,7 +397,6 @@ uint mmapMapping(uint addr, int length, int prot, int flags, int fd, int offset)
     if(mappages(myproc()->pgdir,(void*)MMAPBASE+addr+i*PGSIZE,PGSIZE,V2P(pa),perm)<0)
       return -1;
     if((flags&MAP_ANONYMOUS)==MAP_ANONYMOUS){
-      cprintf("memset");
       memset(pa,0x0,PGSIZE);
     }
     else{

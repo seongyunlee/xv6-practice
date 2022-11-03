@@ -27,7 +27,7 @@ int getpname(int);
 int getnice(int);
 int setnice(int pid,int new_nice);
 int ps(int);
-int mmap(uint addr, int length, int prot, int flags, int fd, int offset);
+uint mmap(uint addr, int length, int prot, int flags, int fd, int offset);
 
 
 // ulib.c

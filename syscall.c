@@ -107,7 +107,7 @@ extern int sys_getpname(void);
 extern int sys_getnice(void);
 extern int sys_setnice(void);
 extern int sys_ps(void);
-extern int sys_mmap(void);
+extern uint sys_mmap(void);
 
 static int (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,

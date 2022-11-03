@@ -123,7 +123,7 @@ sys_ps(void){
     ps(pid);
     return 0;
 }
-int
+uint
 sys_mmap(void){
   int addr;
   int length;
@@ -133,7 +133,7 @@ sys_mmap(void){
   int offset;
   if(argint(0,&addr)<0 || argint(1,&length)<0 || argint(2,&prot)<0 || argint(3,&flags)<0|| argint(4,&fd)<0 || argint(5,&offset)<0){
     
-    return -1;
+    return 0;
   }
   return mmap((uint) addr,length,prot,flags,fd,offset);
   
