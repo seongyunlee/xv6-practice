@@ -4,9 +4,7 @@
 
 int main(){
     printf(1,"start test\n");
-    mmap(1,2,3,4,5,6);
-    char  *x = (char *) 0x4000000;
-    printf(1,"%c\n",*x);
-    printf(1,"done\n");
+    uint i = (uint) mmap(0, 8192, PROT_READ, MAP_POPULATE|MAP_ANONYMOUS, -1, 0);
+    printf(1,"%d %c",*((char *)i));
     exit();
 }
