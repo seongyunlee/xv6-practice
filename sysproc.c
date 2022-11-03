@@ -123,7 +123,7 @@ sys_ps(void){
     ps(pid);
     return 0;
 }
-uint
+int
 sys_mmap(void){
   int addr;
   int length;
