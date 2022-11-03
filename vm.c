@@ -396,7 +396,7 @@ uint mmapMapping(uint addr, int length, int prot, int flags, int fd, int offset)
     char *pa = kalloc();
     if(mappages(myproc()->pgdir,(void*)MMAPBASE+addr+i*PGSIZE,PGSIZE,V2P(pa),perm)<0)
       return -1;
-    if((flags|MAP_ANONYMOUS)==MAP_ANONYMOUS){
+    if((flags&MAP_ANONYMOUS)==MAP_ANONYMOUS){
       memset(pa,0,PGSIZE);
     }
     else{
@@ -404,13 +404,6 @@ uint mmapMapping(uint addr, int length, int prot, int flags, int fd, int offset)
     }
   }
   return 0;
-}
-uint testmmap(){
-  void* x = (void*) 0x4000000;
-  char *pa = kalloc();
-  memset(pa,(int)'a',PGSIZE);
-  int y = mappages(myproc()->pgdir,x, 4, V2P(pa), PTE_W|PTE_U);
-  return y;
 }
 
 uint 
