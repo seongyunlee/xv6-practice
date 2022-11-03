@@ -7,7 +7,7 @@ int main(){
     printf(1,"start test\n");
     uint i = (uint) mmap(0, 8192, PROT_READ, MAP_POPULATE|MAP_ANONYMOUS, -1, 0);
     printf(1,"%d %x",*((int *)i));
-    uint x = (uint) map(8192,4096,PROT_READ|PROT_WRITE,MAP_ANONYMOUS,-1,0);
+    int* x = (int *) map(8192,4096,PROT_READ|PROT_WRITE,MAP_ANONYMOUS,-1,0);
     int i=0;
     for(;x<1024;x++){
         x[0]=i++;
