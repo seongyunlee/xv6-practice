@@ -1,6 +1,7 @@
 #include "types.h"
 #include "user.h"
 #include "stat.h"
+#include "param.h"
 
 int main(){
     printf(1,"start test\n");
