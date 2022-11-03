@@ -78,7 +78,7 @@ trap(struct trapframe *tf)
     lapiceoi();
     break;
   case T_PGFLT:
-    cprintf("handling page fault\n");
+    cprintf("handling page fault %x\n",rcr2());
     struct mmap_area* ma;
     uint trap_addr =rcr2();
     struct proc* p = myproc();
