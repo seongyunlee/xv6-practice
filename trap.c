@@ -77,7 +77,15 @@ trap(struct trapframe *tf)
             cpuid(), tf->cs, tf->eip);
     lapiceoi();
     break;
-
+  case T_PGFLT:
+    cprintf("handling page fault");
+    struct mmap_area* ma;
+    uint trap_addr =rcr2();
+    for(ma= mmap_array;i<mmap_array[64];i++){
+      if(ma->addr<=trap_addr && trap_addr<ma->addr+ma->length){
+        mmapMapping(ma->addr,ma->length,ma->prot,ma->flags,ma->f,ma->offset);
+      }
+    }
   //PAGEBREAK: 13
   default:
     if(myproc() == 0 || (tf->cs&3) == 0){

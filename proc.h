@@ -10,6 +10,7 @@ struct cpu {
   struct proc *proc;           // The process running on this cpu or null
 };
 
+extern struct mmap_area mmap_array[64];
 extern struct cpu cpus[NCPU];
 extern int ncpu;
 

@@ -387,7 +387,7 @@ copyout(pde_t *pgdir, uint va, void *p, uint len)
   return 0;
 }
 //mapping virtual mmap area to physical page
-uint mmapMapping(uint addr, int length, int prot, int flags, int fd, int offset){
+uint mmapMapping(uint addr, int length, int prot, int flags, struct file* mfile, int offset){
   int num_page=(int)length/PGSIZE;
   int perm=PTE_U;
   if((prot&PROT_WRITE)==PROT_WRITE)
@@ -396,11 +396,9 @@ uint mmapMapping(uint addr, int length, int prot, int flags, int fd, int offset)
     char *pa = kalloc();
     if(mappages(myproc()->pgdir,(void*)MMAPBASE+addr+i*PGSIZE,PGSIZE,V2P(pa),perm)<0)
       return -1;
-    if((flags&MAP_ANONYMOUS)==MAP_ANONYMOUS){
-      memset(pa,0x0,PGSIZE);
-    }
-    else{
-      fileread(myproc()->ofile[fd],pa,length);
+    memset(pa,0x0,PGSIZE);
+    if((flags&MAP_ANONYMOUS)!=MAP_ANONYMOUS){
+      fileread(mfile,pa,length);
     }
   }
   return 0;
@@ -416,7 +414,8 @@ allocmmapArea(uint addr, int length, int prot, int flags, int fd, int offset){
   if(ma->addr != 0)
     return -1;
   //set mmap area info
-  ma->addr=addr;
+  ma->addr=MMAPBASE+addr;
+  ma->f = myproc()->ofile[fd];
   ma->length=length;
   ma->offset=offset;
   ma->prot= prot;
@@ -425,7 +424,7 @@ allocmmapArea(uint addr, int length, int prot, int flags, int fd, int offset){
 
   if((flags&MAP_POPULATE) == MAP_POPULATE){
     //allocate physical page immediately
-    if(mmapMapping(addr,length,prot,flags,fd,offset)<0)
+    if(mmapMapping(addr,length,prot,flags,myproc()->ofile[fd],offset)<0)
       return -1;
   }
   return MMAPBASE+addr;
