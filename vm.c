@@ -386,6 +386,33 @@ copyout(pde_t *pgdir, uint va, void *p, uint len)
   }
   return 0;
 }
+//mapping virtual mmap area to physical page
+uint mmapMapping(uint addr, int length, int prot, int flags, int fd, int offset){
+  int num_page=(int)length/PGSIZE;
+  int perm=PTE_U;
+  if((prot&PROT_WRITE)==PROT_WRITE)
+    perm=PTE_U|PTE_W;
+  for(int i=0;i<num_page;i++){
+    char *pa = kalloc();
+    if(mappages(myproc()->pgdir,addr+i*PGSIZE,V2P(pa),perm)<0)
+      return -1;
+    if((flags|MAP_ANONYMOUS)==MAP_ANONYMOUS){
+      memset(pa,0,PGSIZE);
+    }
+    else{
+      fileread(myproc()->ofile[fd],pa,length);
+    }
+  }
+  return 0;
+}
+uint testmmap(){
+  void* x = (void*) 0x4000000;
+  char *pa = kalloc();
+  memset(pa,(int)'a',PGSIZE);
+  int y = mappages(myproc()->pgdir,x, 4, V2P(pa), PTE_W|PTE_U);
+  return y;
+}
+
 uint 
 allocmmapArea(uint addr, int length, int prot, int flags, int fd, int offset){
   struct mmap_area *ma = mmap_array;
@@ -409,32 +436,6 @@ allocmmapArea(uint addr, int length, int prot, int flags, int fd, int offset){
       return -1;
   }
   return addr;
-}
-//mapping virtual mmap area to physical page
-uint mmapMapping(uint addr, int length, int prot, int flags, int fd, int offset){
-  int num_page=(int)length/PGSIZE;
-  int perm=PTE_U;
-  if((prot&PROT_WRITE)==PROT_WRITE)
-    perm=PTE_U|PTE_W;
-  for(int i=0;i<num_page;i++){
-    char *pa = kalloc();
-    if(mappages(myproc()->pgdir,addr+i*PGSIZE,V2P(pa),perm)<0)
-      return -1;
-    if((flags|MAP_ANONYMOUS)==MAP_ANONYMOUS){
-      memset(pa,0,PGSIZE);
-    }
-    else{
-      fileread(fd,pa,length);
-    }
-  }
-  return 0;
-}
-uint testmmap(){
-  void* x = (void*) 0x4000000;
-  char *pa = kalloc();
-  memset(pa,(int)'a',PGSIZE);
-  int y = mappages(myproc()->pgdir,x, 4, V2P(pa), PTE_W|PTE_U);
-  return y;
 }
 //PAGEBREAK!
 // Blank page.
