@@ -87,6 +87,7 @@ trap(struct trapframe *tf)
       if(p != ma->p) continue;
       if(ma->addr+MMAPBASE<=trap_addr && trap_addr<ma->addr+ma->length+MMAPBASE){
         mmapMapping(ma->addr,ma->length,ma->prot,ma->flags,ma->f,ma->offset);
+        mmaped=1;
         break;
       }
     }
