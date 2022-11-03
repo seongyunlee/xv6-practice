@@ -81,7 +81,9 @@ trap(struct trapframe *tf)
     cprintf("handling page fault\n");
     struct mmap_area* ma;
     uint trap_addr =rcr2();
+    struct proc* myproc =myproc();
     for(ma= mmap_array;ma<&mmap_array[64];ma++){
+      if(myproc != ma->p) continue;
       if(ma->addr<=trap_addr && trap_addr<ma->addr+ma->length){
         mmapMapping(ma->addr,ma->length,ma->prot,ma->flags,ma->f,ma->offset);
         lapiceoi();
