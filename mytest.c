@@ -8,6 +8,7 @@ int main(){
     uint i = (uint) mmap(0, 8192, PROT_READ, MAP_POPULATE|MAP_ANONYMOUS, -1, 0);
     printf(1,"%d %x\n",*((int *)i));
     int* x = (int *)mmap(8192,4096,PROT_READ|PROT_WRITE,MAP_ANONYMOUS,-1,0);
+    int fd;
     for(int i=0;i<1024;i++){
         x[i]=i;
     }
