@@ -398,7 +398,8 @@ uint mmapMapping(uint addr, int length, int prot, int flags, struct file* mfile,
     if(mappages(myproc()->pgdir,(void*)MMAPBASE+addr+i*PGSIZE,PGSIZE,V2P(pa),perm)<0)
       return -1;
     memset(pa,0x0,PGSIZE);
-    if((flags&MAP_ANONYMOUS)!=MAP_ANONYMOUS){
+    if((flags&MAP_ANONYMOUS)==0){
+      cprintf("file mapped")
       fileread(mfile,pa,length);
     }
   }
