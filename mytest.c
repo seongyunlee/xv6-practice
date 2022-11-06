@@ -22,7 +22,7 @@ int main(){
         printf(1,"success/n");
         char buf[26];
         int len=read(fd,buf,26);
-        printf(1,"%s/n",buf);
+        printf(1,"%d %s/n",len,buf);
     }
 
     printf(1,"\n");
