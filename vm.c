@@ -409,7 +409,7 @@ uint mmapMapping(uint addr, int length, int prot, int flags, struct file* mfile,
       return -1;
     memset(pa,0x0,PGSIZE);
     if((flags&MAP_ANONYMOUS)==0){
-      cprintf("file mapped");
+      cprintf("file mapped\n");
       offset+=mmap_fileread(mfile,addr+i*PGSIZE+MMAPBASE,offset,PGSIZE);
     }
   }
