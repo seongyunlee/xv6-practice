@@ -436,8 +436,10 @@ allocmmapArea(uint addr, int length, int prot, int flags, int fd, int offset){
 
   if(flags&MAP_POPULATE){
     //allocate physical page immediately
-    if(mmapMapping(addr,length,prot,flags,myproc()->ofile[fd],offset)<0)
+    if(mmapMapping(addr,length,prot,flags,myproc()->ofile[fd],offset)<0){
+      cprintf("failed\n");
       return -1;
+    }
   }
   return MMAPBASE+addr;
 }
