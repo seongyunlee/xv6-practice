@@ -388,7 +388,7 @@ copyout(pde_t *pgdir, uint va, void *p, uint len)
 }
 uint mmap_fileread(struct file *f,uint va,int offset,int size){
   ilock(f->ip);
-  int r_byte = readi(f->ip,1,va,offset,size);
+  int r_byte = readi(f->ip,va,offset,size);
   offset+=r_byte;
   iunlock(f->ip);
   return offset;
@@ -407,7 +407,7 @@ uint mmapMapping(uint addr, int length, int prot, int flags, struct file* mfile,
     memset(pa,0x0,PGSIZE);
     if((flags&MAP_ANONYMOUS)==0){
       cprintf("file mapped");
-      offset+=mmap_fileread(mfile,addr+MMAPBASE,offset,PGSIZE);
+      offset+=mmap_fileread(mfile,addr+i*PGSIZE+MMAPBASE,offset,PGSIZE);
     }
   }
   return 0;
