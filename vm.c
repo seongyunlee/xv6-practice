@@ -393,7 +393,7 @@ uint mmap_fileread(struct file *f,uint va,int offset,int size){
   ilock(f->ip);
   cprintf("mmapfile readi at %x",(int)va);
   int r_byte = readi(f->ip,(char *)va,(uint)offset,10);
-  offset+=1;
+  offset+=r_byte;
   iunlock(f->ip);
   return offset;
 }
