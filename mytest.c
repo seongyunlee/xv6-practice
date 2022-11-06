@@ -31,7 +31,7 @@ int main(){
     }
 
     int *x = mmap(16384, 4096, PROT_READ, MAP_POPULATE, fd, 0);
-    printf("%x %s",(int)x,x);
+    printf(1,"%x %s",(int)x,x);
 
     printf(1,"\n");
     exit();
