@@ -16,7 +16,7 @@ int main(){
         printf(1,"%d",x[k]);
     }
 
-    if((fd = open("a.txt", 0))==1){
+    if((fd = open("a.txt", 0))==-1){
         printf(1,"fail\n");
     }
     else{
