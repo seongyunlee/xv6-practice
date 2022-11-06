@@ -30,7 +30,9 @@ int main(){
         printf(1,"%d %s\n",rlen,alpha);
     }
 
-    mmap(16384, 4096, PROT_READ|PROT_WRITE, MAP_POPULATE, fd, 0);
+    char* fp = (char *)mmap(16384, 4096, PROT_READ|PROT_WRITE, MAP_POPULATE, fd, 0);
+
+    printf(1,"print %s\n",fp);
 
     printf(1,"\n");
     exit();
