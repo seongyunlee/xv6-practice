@@ -24,7 +24,8 @@
         "complex": "c",
         "__config": "c",
         "istream": "c",
-        "functional": "c"
+        "functional": "c",
+        "chrono": "c"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }
