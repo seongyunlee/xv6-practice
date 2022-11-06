@@ -18,14 +18,14 @@ int main(){
     }
 
 
-    if((fd = open("abcdef", O_CREATE))==-1){
+    if((fd = open("abcdef", O_CREATE|O_RDWR))==-1){
         printf(1,"fail\n");
     }
     else{
         printf(1,"success\n");
         char alpha[10]="ALPHATEST";
         int len = write(fd, alpha,10);
-        printf(1,"%d %s",len);
+        printf(1,"%d\n",len);
     }
 
     printf(1,"\n");
