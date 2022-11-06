@@ -16,14 +16,14 @@ int main(){
         printf(1,"%d",x[k]);
     }
 
-    if((fd = open("a.txt", 0))==0){
-        printf(1,"fail/n");
+    if((fd = open("a.txt", 0))==1){
+        printf(1,"fail\n");
     }
     else{
-        printf(1,"success/n");
+        printf(1,"success\n");
         char buf[26];
         int len=read(fd,buf,26);
-        printf(1,"%d %s/n",len,buf);
+        printf(1,"%d %s\n",len,buf);
     }
 
     printf(1,"\n");
