@@ -30,8 +30,8 @@ int main(){
         printf(1,"%d %s\n",rlen,alpha);
     }
 
-    int *y = (int *)mmap(16384, 4096, PROT_READ, MAP_POPULATE, fd, 0);
-    printf(1,"%x %s",(int)y,y);
+    char *y = (char *)mmap(16384, 4096, PROT_READ, MAP_POPULATE, fd, 0);
+    printf(1,"file mapped %x %s",(int)y,y);
 
     printf(1,"\n");
     exit();
