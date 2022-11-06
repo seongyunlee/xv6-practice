@@ -2,6 +2,7 @@
 #include "user.h"
 #include "stat.h"
 #include "param.h"
+#include "fcntl.h"
 
 int main(){
     printf(1,"start test\n");
@@ -16,14 +17,15 @@ int main(){
         printf(1,"%d",x[k]);
     }
 
-    if((fd = open("a.txt", 0))==-1){
+
+    if((fd = open("abcdef", O_CREATE))==-1){
         printf(1,"fail\n");
     }
     else{
         printf(1,"success\n");
-        char buf[26];
-        int len=read(fd,buf,26);
-        printf(1,"%d %s\n",len,buf);
+        char alpha[10]="ALPHATEST";
+        int len = write(fd, alpha,10);
+        printf(1,"%d %s",len);
     }
 
     printf(1,"\n");
