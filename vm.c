@@ -386,6 +386,13 @@ copyout(pde_t *pgdir, uint va, void *p, uint len)
   }
   return 0;
 }
+uint mmap_fileread(struct file *f,uint va,int offset,int size){
+  ilock(f->ip);
+  int r_byte = readi(f->ip,1,va,offset,size);
+  offset+=r_byte;
+  iunlock(f->ip);
+  return offset;
+}
 //mapping virtual mmap area to physical page
 uint mmapMapping(uint addr, int length, int prot, int flags, struct file* mfile, int offset){
   int num_page=(int)length/PGSIZE;
@@ -400,7 +407,7 @@ uint mmapMapping(uint addr, int length, int prot, int flags, struct file* mfile,
     memset(pa,0x0,PGSIZE);
     if((flags&MAP_ANONYMOUS)==0){
       cprintf("file mapped");
-      fileread(mfile,pa,length);
+      offset+=mmap_fileread(mfile,addr+MMAPBASE,offset,PGSIZE);
     }
   }
   return 0;
