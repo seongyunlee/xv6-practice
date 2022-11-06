@@ -30,7 +30,7 @@ int main(){
         printf(1,"%d %s\n",rlen,alpha);
     }
 
-    void* y = (void *)mmap(16384, 4096, PROT_READ, MAP_POPULATE|MAP_ANONYMOUS, -1, 0);
+    void* y = (void *)mmap(16384, 4096, PROT_READ, MAP_POPULATE, -1, 0);
     printf(1,"file mapped %x",(int)y);
 
     printf(1,"\n");
