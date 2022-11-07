@@ -448,7 +448,7 @@ allocmmapArea(uint addr, int length, int prot, int flags, int fd, int offset){
   return MMAPBASE+addr;
 }
 int deallocmmap(struct mmap_area* ma){
-  int num_page=(int)length/PGSIZE;
+  int num_page=(int)ma->length/PGSIZE;
   int addr=ma->addr;
   for(int i=0;i<num_page;i++){
     memset(MMAPBASE+addr+i*PGSIZE,0x0,PGSIZE);
