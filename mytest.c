@@ -33,9 +33,9 @@ int main(){
         printf(1,"write done\n");
     }
 
-    mmap(16384, 8196, PROT_READ, MAP_POPULATE, fd, 0);
+    int mmap_addr = (int)mmap(16384, 8196, PROT_READ, MAP_POPULATE, fd, 0);
 
-    printf(1,"mmap file success va\n");
+    printf(1,"mmap file success va%d\n",mmap_addr);
     /*
     printf(1,"free space after file mmap %d\n",freemem());
     for(int i=0;i<64;i++){
