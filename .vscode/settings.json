@@ -26,7 +26,11 @@
         "istream": "c",
         "functional": "c",
         "chrono": "c",
-        "cstdio": "c"
+        "cstdio": "c",
+        "__availability": "cpp",
+        "__mutex_base": "cpp",
+        "memory": "cpp",
+        "mutex": "cpp"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }
