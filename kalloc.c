@@ -100,7 +100,7 @@ int countfreePage(){
   while(1){
     if(r>0){
       r=r->next;
-      cnt++;
+      count++;
     }else{
       break;
     }
