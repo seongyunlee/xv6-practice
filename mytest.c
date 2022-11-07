@@ -35,7 +35,7 @@ int main(){
 
     char* fp = (char *)mmap(16384, 8196, PROT_READ, MAP_POPULATE, fd, 0);
 
-    printf(1,"mmap file success va %x\n",(int)fp);
+    printf(1,"mmap file success va\n");
     /*
     printf(1,"free space after file mmap %d\n",freemem());
     for(int i=0;i<64;i++){
