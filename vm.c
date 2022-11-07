@@ -509,7 +509,7 @@ int checkmmapArray(uint trap_addr){
   struct proc* p = myproc();
   int mapped=0;
   acquire(&(mmap_table.mmap_lock));
-  for(ma= mmap_array;ma<&mmap_array[64];ma++){
+  for(ma= mmap_table.mmap_array;ma<&mmap_table.mmap_array[64];ma++){
       if(p != ma->p) continue;
       if(ma->addr+MMAPBASE<=trap_addr && trap_addr<ma->addr+ma->length+MMAPBASE){
         mmapMapping(ma->addr,ma->length,ma->prot,ma->flags,ma->f,ma->offset);
