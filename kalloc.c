@@ -94,3 +94,16 @@ kalloc(void)
   return (char*)r;
 }
 
+int countfreePage(){
+  int count=0;
+  struct run *r;
+  while(1){
+    if(r>0){
+      r=r->next;
+      cnt++;
+    }else{
+      break;
+    }
+  }
+  return count;
+}

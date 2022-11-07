@@ -694,7 +694,7 @@ int munmap(uint addr){
   return removemmapArea(addr);
 }
 int freemem(){
-  return 1;
+  return countfreePage();
 }
 void printUintArrayFormatted(uint *x){
   int start=0;

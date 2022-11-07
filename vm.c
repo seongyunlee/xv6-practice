@@ -466,12 +466,15 @@ int removemmapArea(uint addr){
   for(ma= mmap_array;ma<&mmap_array[64];ma++){
     if(p != ma->p) continue;
     if(ma->addr+MMAPBASE==addr){
-      if(walkpgdir(p->pgdir,(void*)addr,0)!=0){
+      int pte;
+      if((pte=walkpgdir(p->pgdir,(void*)addr,0))!=0){
         cprintf("remove va %x\n",addr);
         deallocmmap(ma);
+        uvmunmap(p->pgdir,addr,PGSIZE,0);
       }
       ma->addr=0; //addr == 0 means that Area is not allocated.
       ma->f = 0;
+      *pte=0;
       return 1;
     }
   }
