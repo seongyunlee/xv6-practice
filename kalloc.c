@@ -98,7 +98,7 @@ int countfreePage(){
   int count=0;
   struct run *r;
   while(1){
-    if(r>0){
+    if(((int)r>0){
       r=r->next;
       count++;
     }else{
