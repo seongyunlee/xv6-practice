@@ -33,7 +33,7 @@ int main(){
         printf(1,"write done\n");
     }
 
-    char* fp = (char *)mmap(16384, 8196, PROT_READ, MAP_POPULATE, fd, 0);
+    mmap(16384, 8196, PROT_READ, MAP_POPULATE, fd, 0);
 
     printf(1,"mmap file success va\n");
     /*
