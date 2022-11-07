@@ -426,6 +426,7 @@ int copymmapArea(struct proc* parent,struct proc* child){
       allocmmapArea(ma->addr,ma->length,ma->prot,ma->flags,ma->f,ma->offset,myproc(),1);
     }
   }
+  return 1;
 }
 uint 
 allocmmapArea(uint addr, int length, int prot, int flags, struct file *f, int offset,struct proc* p,int copy){
