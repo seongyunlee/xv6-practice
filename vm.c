@@ -437,8 +437,9 @@ void initmmap(){
 }
 uint allocmmapArea2(uint addr, int length, int prot, int flags, struct file *f, int offset,struct proc* p,int copy){
   acquire(&(mmap_table.mmap_lock));
-  allocmmapArea(addr,length,prot,flags,f,offset,p,copy);
+  uint r=allocmmapArea(addr,length,prot,flags,f,offset,p,copy);
   release(&(mmap_table.mmap_lock));
+  return r;
 }
 
 //need a mmap_table.mmap_lock;
@@ -507,6 +508,7 @@ int removemmapArea(uint addr){
 }
 int checkmmapArray(uint trap_addr){
   struct proc* p = myproc();
+  struct mmap_area* ma;
   int mapped=0;
   acquire(&(mmap_table.mmap_lock));
   for(ma= mmap_table.mmap_array;ma<&mmap_table.mmap_array[64];ma++){
