@@ -26,7 +26,7 @@ int main(){
         for(int i=0;i<128;i++){
             printf(fd,"ABCDABCDEFGHIJKLMNOPABCDEFGHIJKLMNOPABCDEFGHIJKLMN"); //31byte string
         }
-        putc(fd,"\0");
+        putc(fd,'\0');
         printf(1,"write done\n");
     }
 
