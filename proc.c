@@ -691,7 +691,7 @@ uint mmap(uint addr, int length, int prot, int flags, int fd, int offset){
   return allocmmapArea(addr,length,prot,flags,fd,offset);
 }
 int munmap(uint addr){
-  return 1;
+  return removemmapArea(addr);
 }
 int freemem(){
   return 1;
