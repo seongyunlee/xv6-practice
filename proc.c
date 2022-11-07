@@ -690,6 +690,12 @@ int setnice(int pid,int new_nice){
 uint mmap(uint addr, int length, int prot, int flags, int fd, int offset){
   return allocmmapArea(addr,length,prot,flags,fd,offset);
 }
+int munmap(uint addr){
+  return 1;
+}
+int freemem(){
+  return 1;
+}
 void printUintArrayFormatted(uint *x){
   int start=0;
   int cnt=0;
