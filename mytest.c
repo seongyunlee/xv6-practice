@@ -23,10 +23,10 @@ int main(){
     }
     else{
         printf(1,"success\n");
-        char arr[32] = "ABCDABCDEFGHIJKLMNOPABCDEFGHIJKLMNOPABCDEFGHIJKLMNO"; //32byte arr
         for(int i=0;i<128;i++){
-            putc(fd,arr); //32byte string
+            printf(fd,"ABCDABCDEFGHIJKLMNOPABCDEFGHIJKLMNOPABCDEFGHIJKLMN"); //31byte string
         }
+        putc(fd,"\0");
         printf(1,"write done\n");
     }
 
