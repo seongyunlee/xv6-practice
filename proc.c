@@ -688,7 +688,7 @@ int setnice(int pid,int new_nice){
     return -1;  
 }
 uint mmap(uint addr, int length, int prot, int flags, int fd, int offset){
-  return allocmmapArea(addr,length,prot,flags,fd,offset);
+  return allocmmapArea(addr,length,prot,flags,myproc()->ofile[fd],offset,myproc(),0);
 }
 int munmap(uint addr){
   return removemmapArea(addr);

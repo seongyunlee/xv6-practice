@@ -419,9 +419,16 @@ uint mmapMapping(uint addr, int length, int prot, int flags, struct file* mfile,
   }
   return 0;
 }
-
+int copymmapArea(struct proc* parent,struct proc* child){
+  struct mmap_area *ma = mmap_array;
+  for(;ma<&mmap_array[64];ma++){
+    if(ma->p==parent){
+      allocmmapArea(ma->addr,ma->length,ma->prot,ma->flags,ma->f,ma->offset,myproc(),1);
+    }
+  }
+}
 uint 
-allocmmapArea(uint addr, int length, int prot, int flags, int fd, int offset){
+allocmmapArea(uint addr, int length, int prot, int flags, struct file *f, int offset,struct proc* p,int copy){
   struct mmap_area *ma = mmap_array;
   for(;ma<&mmap_array[64];ma++){
     if(ma->addr == 0)
@@ -431,14 +438,13 @@ allocmmapArea(uint addr, int length, int prot, int flags, int fd, int offset){
     return -1;
   //set mmap area info
   ma->addr=addr;
-  ma->f = myproc()->ofile[fd];
+  ma->f = f;
   ma->length=length;
   ma->offset=offset;
   ma->prot= prot;
   ma->flags= flags;
-  ma->p= myproc();
-
-  if(flags&MAP_POPULATE){
+  ma->p= p;
+  if(copy!=0 && flags&MAP_POPULATE){
     //allocate physical page immediately
     if(mmapMapping(addr,length,prot,flags,myproc()->ofile[fd],offset)<0){
       cprintf("failed\n");
