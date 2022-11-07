@@ -79,9 +79,7 @@ trap(struct trapframe *tf)
     break;
   case T_PGFLT:
     cprintf("handling page fault %x\n",rcr2());
-    struct mmap_area* ma;
     uint trap_addr =rcr2();
-    struct proc* p = myproc();
     int mapped = 0;
     acquire(&mmap_lock);
     mapped=checkmmapArray(trap_addr);

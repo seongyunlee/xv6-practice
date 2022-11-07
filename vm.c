@@ -468,6 +468,8 @@ allocmmapArea(uint addr, int length, int prot, int flags, struct file *f, int of
   }
   return MMAPBASE+addr;
 }
+
+//mmap lock aquired.
 int deallocmmap(struct mmap_area* ma){
   int num_page=(int)ma->length/PGSIZE;
   int addr=ma->addr;
