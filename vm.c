@@ -464,7 +464,7 @@ int removemmapArea(uint addr){
   for(ma= mmap_array;ma<&mmap_array[64];ma++){
     if(p != ma->p) continue;
     if(ma->addr+MMAPBASE==addr){
-      if(walkpgdir(p->pgdir,addr,0)!=0){
+      if(walkpgdir(p->pgdir,(void*)addr,0)!=0){
         deallocmmap(ma);
       }
       ma->addr=0; //addr == 0 means that Area is not allocated.
