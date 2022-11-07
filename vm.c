@@ -452,7 +452,7 @@ int deallocmmap(struct mmap_area* ma){
   int addr=ma->addr;
   for(int i=0;i<num_page;i++){
     cprintf("kfree %x\n",MMAPBASE+addr+i*PGSIZE);
-    char* phyaddr =(char *) P2V(*walkpgdir(myproc()->pgdir,(void*)(MMAPBASE+addr+i*PGSIZE),0));
+    char* phyaddr =(char *) walkpgdir(myproc()->pgdir,(void*)(MMAPBASE+addr+i*PGSIZE),0);
     memset(phyaddr,1,PGSIZE);
     cprintf("phypage addr to virtual address %x\n",(int)phyaddr);
     kfree(phyaddr);
