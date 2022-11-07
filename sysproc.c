@@ -141,30 +141,13 @@ sys_mmap(void){
 int
 sys_munmap(void){
   int addr;
-  int length;
-  int prot;
-  int flags;
-  int fd;
-  int offset;
-  if(argint(0,&addr)<0 || argint(1,&length)<0 || argint(2,&prot)<0 || argint(3,&flags)<0|| argint(4,&fd)<0 || argint(5,&offset)<0){
-    
+  if(argint(0,&addr)<0 ){
     return 0;
   }
-  return mmap((uint) addr,length,prot,flags,fd,offset);
+  return munmap((uint) addr);
   
 }
 int
 sys_freemem(void){
-  int addr;
-  int length;
-  int prot;
-  int flags;
-  int fd;
-  int offset;
-  if(argint(0,&addr)<0 || argint(1,&length)<0 || argint(2,&prot)<0 || argint(3,&flags)<0|| argint(4,&fd)<0 || argint(5,&offset)<0){
-    
-    return 0;
-  }
-  return mmap((uint) addr,length,prot,flags,fd,offset);
-  
+  return freemem();
 }

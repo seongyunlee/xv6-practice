@@ -447,6 +447,33 @@ allocmmapArea(uint addr, int length, int prot, int flags, int fd, int offset){
   }
   return MMAPBASE+addr;
 }
+int deallocmmap(struct mmap_area* ma){
+  int num_page=(int)length/PGSIZE;
+  int addr=ma->addr;
+  for(int i=0;i<num_page;i++){
+    memset(MMAPBASE+addr+i*PGSIZE,0x0,PGSIZE);
+    int phyaddr = P2V(*walkpgdir(myproc()->pgdir,MMAPBASE+addr+i*PGSIZE,0));
+    kfree(phyaddr);
+    cprintf("delloacte va %x\n",MMAPBASE+addr+i*PGSIZE);    
+  }
+  return 0;
+}
+int removemmapArea(uint addr){
+  struct mmap_area* ma;
+  struct proc* p = myproc();
+  int removed = 0;
+  for(ma= mmap_array;ma<&mmap_array[64];ma++){
+    if(p != ma->p) continue;
+    if(ma->addr+MMAPBASE==addr){
+      if(walkpgdir(p->pgdir,addr)!=0){
+        deallocmmap(ma);
+      }
+      ma->addr=0; //addr == 0 means that Area is not allocated.
+      ma->f = 0;
+    }
+  }
+}
+
 //PAGEBREAK!
 // Blank page.
 //PAGEBREAK!
