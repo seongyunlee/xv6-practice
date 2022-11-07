@@ -14,7 +14,7 @@
 extern char data[];  // defined by kernel.ld
 pde_t *kpgdir;  // for use in scheduler()
 struct{
-  struct mmap_area mmap_array;
+  struct mmap_area* mmap_array;
   struct spinlock mmap_lock;
 }mmap_table;
 // Set up CPU's kernel segment descriptors.
