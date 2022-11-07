@@ -469,7 +469,7 @@ int removemmapArea(uint addr){
       }
       ma->addr=0; //addr == 0 means that Area is not allocated.
       ma->f = 0;
-      return 1
+      return 1;
     }
   }
   return -1;
