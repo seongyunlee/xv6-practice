@@ -81,9 +81,7 @@ trap(struct trapframe *tf)
     cprintf("handling page fault %x\n",rcr2());
     uint trap_addr =rcr2();
     int mapped = 0;
-    acquire(&mmap_lock);
     mapped=checkmmapArray(trap_addr);
-    release(&mmap_lock);
     if(mapped){
       lapiceoi();
       break;
