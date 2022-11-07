@@ -29,7 +29,7 @@ int setnice(int pid,int new_nice);
 int ps(int);
 uint mmap(uint addr, int length, int prot, int flags, int fd, int offset);
 int munmap(uint);
-int freemap(void);
+int freemem(void);
 
 // ulib.c
 int stat(const char*, struct stat*);
