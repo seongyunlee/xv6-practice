@@ -446,7 +446,7 @@ allocmmapArea(uint addr, int length, int prot, int flags, struct file *f, int of
   ma->p= p;
   if(copy!=0 && flags&MAP_POPULATE){
     //allocate physical page immediately
-    if(mmapMapping(addr,length,prot,flags,myproc()->ofile[fd],offset)<0){
+    if(mmapMapping(addr,length,prot,flags,f,offset)<0){
       cprintf("failed\n");
       return -1;
     }
