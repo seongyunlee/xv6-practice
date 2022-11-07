@@ -26,7 +26,7 @@ int main(){
         for(int i=0;i<2048;i++){
             printf(fd,"ABCDEFGHIJKLMNOPQRSTUVWXYZ");
         }
-        printf("write done\n");
+        printf(1,"write done\n");
     }
 
     char* fp = (char *)mmap(16384, 4096, PROT_READ, MAP_POPULATE, fd, 0);
