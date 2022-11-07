@@ -34,6 +34,7 @@ int main(){
     for(int i=0;i<4096;i++){
         printf(1,"<memory read from %x %c >",(int)fp+i,fp[i]);
     }
+    munmap((uint)fp);
 
     printf(1,"\n");
     exit();
