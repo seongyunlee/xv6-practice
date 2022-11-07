@@ -16,9 +16,10 @@ int main(){
         x[i]=i;
     }
     fork();
+    /*
     for(int k=0;k<1024;k++){
         printf(1,"%d",x[k]);
-    }
+    }*/
 
 
     if((fd = open("abcdef", O_CREATE|O_RDWR))==-1){
