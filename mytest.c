@@ -23,7 +23,7 @@ int main(){
     }
     else{
         printf(1,"success\n");
-        for(int i=0;i<128;i++){
+        for(int i=0;i<1;i++){
             printf(fd,"ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFABCDEFGHIJKLMNOPQRSTUVWXYZABCDEF"); //64byte string
         }
         printf(1,"write done\n");
@@ -31,7 +31,7 @@ int main(){
 
     char* fp = (char *)mmap(16384, 8196, PROT_READ, MAP_POPULATE, fd, 0); 
 
-    for(int i=0;i<4096;i++){
+    for(int i=0;i<64;i++){
         printf(1,"<memory read from %x %c >",(int)fp+i,fp[i]);
     }
     munmap((uint)fp);
