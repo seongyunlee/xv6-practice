@@ -32,7 +32,7 @@ int main(){
     char* fp = (char *)mmap(16384, 4096, PROT_READ, MAP_POPULATE, fd, 0);
 
     for(char* i=0;i<&fp[4096];i++){
-        printf(1,"<memory read from %x %c >",(int)fp,&fp);
+        printf(1,"<memory read from %x %c >",(int)i,&i);
     }
 
     printf(1,"\n");
