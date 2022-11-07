@@ -96,7 +96,8 @@ kalloc(void)
 
 int countfreePage(){
   int count=0;
-  struct run *r;
+  struct run *r = kmem.freelist;
+  acquire(&kmem.lock);
   while(1){
     if((int)r>0){
       r=r->next;
@@ -105,5 +106,6 @@ int countfreePage(){
       break;
     }
   }
+  release(&kmem.lock);
   return count;
 }
