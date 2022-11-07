@@ -451,7 +451,7 @@ int deallocmmap(struct mmap_area* ma){
   int num_page=(int)ma->length/PGSIZE;
   int addr=ma->addr;
   for(int i=0;i<num_page;i++){
-    memset(MMAPBASE+addr+i*PGSIZE,0x0,PGSIZE);
+    memset((void*)(MMAPBASE+addr+i*PGSIZE),0x0,PGSIZE);
     char* phyaddr =(char *) P2V(*walkpgdir(myproc()->pgdir,MMAPBASE+addr+i*PGSIZE,0));
     kfree(phyaddr);
     cprintf("delloacte va %x\n",MMAPBASE+addr+i*PGSIZE);    
