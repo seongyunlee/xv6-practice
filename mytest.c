@@ -23,8 +23,9 @@ int main(){
     }
     else{
         printf(1,"success\n");
-        char alpha[10]="ALPHATEST";
-        int len = write(fd, alpha,10);
+        for(int i=0;i<2048;i++){
+            printf(fd,"ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+        }
         printf(1,"%d\n",len);
         int rlen= read(fd,alpha,10);
         printf(1,"%d %s\n",rlen,alpha);

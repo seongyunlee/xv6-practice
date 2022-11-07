@@ -389,10 +389,10 @@ copyout(pde_t *pgdir, uint va, void *p, uint len)
   }
   return 0;
 }
-uint mmap_fileread(struct file *f,uint va,int offset,int size){
+uint mmap_fileread(struct file *f,uint va,int offset){
   ilock(f->ip);
   cprintf("mmapfile readi at %x",(int)va);
-  int r_byte = readi(f->ip,(char *)va,(uint)offset,10);
+  int r_byte = readi(f->ip,(char *)va,(uint)offset,PGSIZE);
   offset+=r_byte;
   iunlock(f->ip);
   return offset;
@@ -413,7 +413,7 @@ uint mmapMapping(uint addr, int length, int prot, int flags, struct file* mfile,
     if((flags&MAP_ANONYMOUS)==0){
       cprintf("sys file read to physical page offset : %d\n ",offset);
       cprintf("file address %x\n",(int)mfile);
-      offset+=mmap_fileread(mfile,(uint)pa,offset,PGSIZE);
+      offset+=mmap_fileread(mfile,(uint)pa,offset);
     }
     
   }
