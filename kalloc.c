@@ -99,8 +99,7 @@ int countfreePage(){
   struct run *r = kmem.freelist;
   acquire(&kmem.lock);
   while(1){
-    cprintf("count free %d\n",(int)r);
-    if((int)r>0){
+    if((uint)r>0){
       r=r->next;
       count++;
     }else{
