@@ -431,7 +431,7 @@ int copymmapArea(struct proc* parent,struct proc* child){
 }
 uint 
 allocmmapArea(uint addr, int length, int prot, int flags, struct file *f, int offset,struct proc* p,int copy){
-  if((int)(mmap_lock.ame)==0){
+  if((int)(mmap_lock.name)==0){
     initlock(&mmap_lock,"mmaplock");
   }
   struct mmap_area *ma = mmap_array;
