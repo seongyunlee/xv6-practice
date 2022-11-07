@@ -25,7 +25,8 @@
         "__config": "c",
         "istream": "c",
         "functional": "c",
-        "chrono": "c"
+        "chrono": "c",
+        "cstdio": "c"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }
