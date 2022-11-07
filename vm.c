@@ -13,8 +13,10 @@
 
 extern char data[];  // defined by kernel.ld
 pde_t *kpgdir;  // for use in scheduler()
-struct mmap_area mmap_array[64];
-struct spinlock mmap_lock;
+struct{
+  struct mmap_area mmap_array;
+  struct spinlock mmap_lock;
+}mmap_table;
 // Set up CPU's kernel segment descriptors.
 // Run once on entry on each CPU.
 void
@@ -420,21 +422,30 @@ uint mmapMapping(uint addr, int length, int prot, int flags, struct file* mfile,
   return 0;
 }
 int copymmapArea(struct proc* parent,struct proc* child){
-  struct mmap_area *ma = mmap_array;
-  for(;ma<&mmap_array[64];ma++){
+  struct mmap_area *ma = mmap_table.mmap_array;
+  acquire(&(mmap_table.mmap_lock));
+  for(;ma<&mmap_table.mmap_array[64];ma++){
     if(ma->p==parent){
       allocmmapArea(ma->addr,ma->length,ma->prot,ma->flags,ma->f,ma->offset,myproc(),1);
     }
   }
+  release(&(mmap_table.mmap_lock));
   return 1;
 }
 void initmmap(){
-    initlock(&mmap_lock,"mmaplock");
+    initlock(&(mmap_table.mmap_lock),"mmaplock");
 }
+uint allocmmapArea2(uint addr, int length, int prot, int flags, struct file *f, int offset,struct proc* p,int copy){
+  acquire(&(mmap_table.mmap_lock));
+  allocmmapArea(addr,length,prot,flags,f,offset,p,copy);
+  release(&(mmap_table.mmap_lock));
+}
+
+//need a mmap_table.mmap_lock;
 uint 
 allocmmapArea(uint addr, int length, int prot, int flags, struct file *f, int offset,struct proc* p,int copy){
-  struct mmap_area *ma = mmap_array;
-  for(;ma<&mmap_array[64];ma++){
+  struct mmap_area *ma = mmap_table.mmap_array;
+  for(;ma<&mmap_table.mmap_array[64];ma++){
     if(ma->addr == 0)
       break;
   }
@@ -473,7 +484,8 @@ int deallocmmap(struct mmap_area* ma){
 int removemmapArea(uint addr){
   struct mmap_area* ma;
   struct proc* p = myproc();
-  for(ma= mmap_array;ma<&mmap_array[64];ma++){
+  acquire(&(mmap_table.mmap_lock));
+  for(ma= mmap_table.mmap_array;ma<&mmap_table.mmap_array[64];ma++){
     if(p != ma->p) continue;
     if(ma->addr+MMAPBASE==addr){
       int* pte;
@@ -484,12 +496,28 @@ int removemmapArea(uint addr){
       }
       ma->addr=0; //addr == 0 means that Area is not allocated.
       ma->f = 0;
+      release(&(mmap_table.mmap_lock));
       return 1;
     }
   }
+  release(&(mmap_table.mmap_lock));
   return -1;
 }
-
+int checkmmapArray(uint trap_addr){
+  struct proc* p = myproc();
+  int mapped=0;
+  acquire(&(mmap_table.mmap_lock));
+  for(ma= mmap_array;ma<&mmap_array[64];ma++){
+      if(p != ma->p) continue;
+      if(ma->addr+MMAPBASE<=trap_addr && trap_addr<ma->addr+ma->length+MMAPBASE){
+        mmapMapping(ma->addr,ma->length,ma->prot,ma->flags,ma->f,ma->offset);
+        mapped=1;
+        break;
+      }
+    }
+  release(&(mmap_table.mmap_lock));
+  return mapped;
+}
 //PAGEBREAK!
 // Blank page.
 //PAGEBREAK!

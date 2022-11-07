@@ -66,10 +66,9 @@ struct mmap_area{
   int prot; // protection flag
   int flags; // type of mmap
   struct proc *p; // process own this area
-} _mmap_area;
+} _mmap_area[64];
 
 void sys_sleepEnd(struct proc *p);
-extern struct mmap_area mmap_array[64];
 extern struct cpu cpus[NCPU];
 extern int ncpu;
 // Process memory is laid out contiguously, low addresses first:
