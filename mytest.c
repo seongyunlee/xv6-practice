@@ -24,12 +24,12 @@ int main(){
     else{
         printf(1,"success\n");
         for(int i=0;i<128;i++){
-            printf(fd,"ABCDABCDEFGHIJKLMNOPABCDEFGHIJKLMNOPABCDEFGHIJKLMNP"); //31byte string
+            printf(fd,"ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFABCDEFGHIJKLMNOPQRSTUVWXYZABCDEF"); //64byte string
         }
         printf(1,"write done\n");
     }
 
-    char* fp = (char *)mmap(16384, 4096, PROT_READ, MAP_POPULATE, fd, 0); 
+    char* fp = (char *)mmap(16384, 8196, PROT_READ, MAP_POPULATE, fd, 0); 
 
     for(int i=0;i<4096;i++){
         printf(1,"<memory read from %x %c >",(int)fp+i,fp[i]);
