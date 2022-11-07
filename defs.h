@@ -194,6 +194,7 @@ void            switchkvm(void);
 int             copyout(pde_t*, uint, void*, uint);
 void            clearpteu(pde_t *pgdir, char *uva);
 uint allocmmapArea(uint addr, int length, int prot, int flags, struct file* f, int offset,struct proc* p,int copy);
+uint allocmmapArea2(uint addr, int length, int prot, int flags, struct file* f, int offset,struct proc* p,int copy);
 uint mmapMapping(uint addr, int length, int prot, int flags, struct file* mfile, int offset);
 int removemmapArea(uint addr);
 int copymmapArea(struct proc* parent,struct proc* child);
