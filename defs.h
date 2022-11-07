@@ -198,7 +198,7 @@ uint mmapMapping(uint addr, int length, int prot, int flags, struct file* mfile,
 int removemmapArea(uint addr);
 int copymmapArea(struct proc* parent,struct proc* child);
 void initmmap();
-struct spinlock mmap_lock;
+extern struct spinlock mmap_lock;
 
 // number of elements in fixed-size array
 #define NELEM(x) (sizeof(x)/sizeof((x)[0]))
