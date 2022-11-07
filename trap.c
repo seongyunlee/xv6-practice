@@ -83,6 +83,7 @@ trap(struct trapframe *tf)
     uint trap_addr =rcr2();
     struct proc* p = myproc();
     int mapped = 0;
+    acquire(&mmap_lock);
     for(ma= mmap_array;ma<&mmap_array[64];ma++){
       if(p != ma->p) continue;
       if(ma->addr+MMAPBASE<=trap_addr && trap_addr<ma->addr+ma->length+MMAPBASE){
@@ -91,6 +92,7 @@ trap(struct trapframe *tf)
         break;
       }
     }
+    release(&mmap_lock);
     if(mapped){
       lapiceoi();
       break;

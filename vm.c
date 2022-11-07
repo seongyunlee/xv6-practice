@@ -14,7 +14,6 @@
 extern char data[];  // defined by kernel.ld
 pde_t *kpgdir;  // for use in scheduler()
 struct mmap_area mmap_array[64];
-struct spinlock mmap_lock;
 
 // Set up CPU's kernel segment descriptors.
 // Run once on entry on each CPU.
@@ -429,13 +428,12 @@ int copymmapArea(struct proc* parent,struct proc* child){
   }
   return 1;
 }
+void initmmap(){
+    initlock(&mmap_lock,"mmaplock");
+}
 uint 
 allocmmapArea(uint addr, int length, int prot, int flags, struct file *f, int offset,struct proc* p,int copy){
-  if((int)(mmap_lock.name)==0){
-    initlock(&mmap_lock,"mmaplock");
-  }
   struct mmap_area *ma = mmap_array;
-  acquire(&mmap_lock);
   for(;ma<&mmap_array[64];ma++){
     if(ma->addr == 0)
       break;
@@ -457,7 +455,6 @@ allocmmapArea(uint addr, int length, int prot, int flags, struct file *f, int of
       return -1;
     }
   }
-  release(&mmap_lock);
   return MMAPBASE+addr;
 }
 int deallocmmap(struct mmap_area* ma){
