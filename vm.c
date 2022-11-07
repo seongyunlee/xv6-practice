@@ -436,9 +436,9 @@ void initmmap(){
     initlock(&(mmap_table.mmap_lock),"mmaplock");
 }
 uint allocmmapArea2(uint addr, int length, int prot, int flags, struct file *f, int offset,struct proc* p,int copy){
-  acquire(&(mmap_table.mmap_lock));
+  //acquire(&(mmap_table.mmap_lock));
   uint r=allocmmapArea(addr,length,prot,flags,f,offset,p,copy);
-  release(&(mmap_table.mmap_lock));
+  //release(&(mmap_table.mmap_lock));
   return r;
 }
 
