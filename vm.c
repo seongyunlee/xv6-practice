@@ -449,7 +449,7 @@ uint allocmmapArea2(uint addr, int length, int prot, int flags, struct file *f, 
 uint 
 allocmmapArea(uint addr, int length, int prot, int flags, struct file *f, int offset,struct proc* p,int copy){
   struct mmap_area *ma = mmap_table.mmap_array;
-  cprintf("address of mmap array%x",(int)ma);
+  cprintf("address of mmap array %x\n",(int)ma);
   for(;ma<&mmap_table.mmap_array[64];ma++){
     if(ma->addr == 0)
       break;
