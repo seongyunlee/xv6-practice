@@ -539,6 +539,7 @@ void printMmaparray(){
       cprintf("mmap area: pid:%d,start:%d,length:%d\n",ma->p->pid,ma->addr,ma->length);
     }
   release(&(mmap_table.mmap_lock));
+  cprintf("----------\n");
 }
 int checkmmapArray(uint trap_addr){
   struct proc* p = myproc();
