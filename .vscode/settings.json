@@ -30,7 +30,8 @@
         "__availability": "cpp",
         "__mutex_base": "cpp",
         "memory": "cpp",
-        "mutex": "cpp"
+        "mutex": "cpp",
+        "__node_handle": "c"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }

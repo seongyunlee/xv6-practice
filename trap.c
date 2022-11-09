@@ -78,9 +78,7 @@ trap(struct trapframe *tf)
     lapiceoi();
     break;
   case T_PGFLT:
-    int mapped = 0;
-    mapped=checkmmapArray(rcr2());
-    if(mapped){
+    if(checkmmapArray(rcr2());){
       lapiceoi();
       break;
     }
