@@ -349,7 +349,7 @@ copyuvm(pde_t *pgdir, uint sz)
     }
   }
   struct mmap_area *ma = mmap_table.mmap_array;
-  printMmaparray();
+  //printMmaparray();
   acquire(&(mmap_table.mmap_lock));
   for(;ma<&mmap_table.mmap_array[64];ma++){
     if(ma->p!=myproc()) continue;
@@ -363,7 +363,6 @@ copyuvm(pde_t *pgdir, uint sz)
       if((mem = kalloc()) == 0)
         goto bad;
       memmove(mem, (char*)P2V(pa), PGSIZE);
-      cprintf("copy %x %x \n",(int)i,mem);
       if(mappages(d, (void*)i, PGSIZE, V2P(mem), flags) < 0) {
         kfree(mem);
         goto bad;
@@ -421,7 +420,6 @@ copyout(pde_t *pgdir, uint va, void *p, uint len)
 }
 uint mmap_fileread(struct file *f,uint va,int offset){
   ilock(f->ip);
-  cprintf("mmapfile readi at %x\n",(int)va);
   int r_byte = readi(f->ip,(char *)va,(uint)offset,PGSIZE);
   offset+=r_byte;
   iunlock(f->ip);
@@ -435,14 +433,11 @@ uint mmapMapping(uint addr, int length, int prot, int flags, struct file* mfile,
     perm=PTE_U|PTE_W;
   for(int i=0;i<num_page;i++){
     char *pa = kalloc();
-    cprintf("mmap va %x of %d to pa %x\n",MMAPBASE+addr+i*PGSIZE,myproc()->pid,(int)pa);
     if(mappages(myproc()->pgdir,(void*)(MMAPBASE+addr+i*PGSIZE),PGSIZE,V2P(pa),perm)<0)
       return -1;
     memset(pa,0x0,PGSIZE);
     
     if((flags&MAP_ANONYMOUS)==0){
-      cprintf("sys file read to physical page offset : %d\n ",offset);
-      cprintf("file address %x\n",(int)mfile);
       mmap_fileread(mfile,(uint)pa,PGSIZE*i+offset);
     }
     
@@ -465,7 +460,6 @@ void initmmap(){
 }
 uint allocmmapArea2(uint addr, int length, int prot, int flags, struct file *f, int offset,struct proc* p,int copy){
   acquire(&(mmap_table.mmap_lock));
-  cprintf("acquire lock success %d\n",myproc()->pid);
   uint r=allocmmapArea(addr,length,prot,flags,f,offset,p,copy);
   release(&(mmap_table.mmap_lock));
   return r;
@@ -475,7 +469,6 @@ uint allocmmapArea2(uint addr, int length, int prot, int flags, struct file *f, 
 uint 
 allocmmapArea(uint addr, int length, int prot, int flags, struct file *f, int offset,struct proc* p,int copy){
   struct mmap_area *ma = mmap_table.mmap_array;
-  cprintf("address of mmap array %x\n",(int)ma);
   for(;ma<&mmap_table.mmap_array[64];ma++){
     if((int)ma->p == 0)
       break;
@@ -492,9 +485,7 @@ allocmmapArea(uint addr, int length, int prot, int flags, struct file *f, int of
   ma->p= p;
   if(copy==0 && flags&MAP_POPULATE){
     //allocate physical page immediately
-    cprintf("mmaping?\n");
     if(mmapMapping(addr,length,prot,flags,f,offset)<0){
-      cprintf("failed\n");
       return -1;
     }
   }
@@ -508,9 +499,7 @@ int deallocmmap(struct mmap_area* ma){
   for(int i=0;i<num_page;i++){
     pte_t* pte=walkpgdir(myproc()->pgdir,(void*)(MMAPBASE+addr+i*PGSIZE),0);
     char* phyaddr =(char *)P2V(PTE_ADDR(*pte));
-    cprintf("kfree pa %x which is mapped to va %x \n",(int)phyaddr,MMAPBASE+addr+i*PGSIZE);
     kfree(phyaddr);
-    cprintf("delloacte va %x\n",MMAPBASE+addr+i*PGSIZE);    
     *pte=0;
   }
   return 0;
@@ -524,7 +513,6 @@ int removemmapArea(uint addr){
     if(ma->addr+MMAPBASE==addr){
       pte_t* pte;
       if(*(pte=walkpgdir(p->pgdir,(void*)addr,0))!=0){
-        cprintf("remove va %x\n",addr);
         deallocmmap(ma);
       }
       ma->p = 0; //p == 0 means that Area is not allocated.
@@ -551,8 +539,6 @@ int checkmmapArray(uint trap_addr){
   struct proc* p = myproc();
   struct mmap_area* ma;
   int mapped=0;
-  printMmaparray();
-  cprintf("check pte %x\n",P2V(PTE_ADDR(*walkpgdir(myproc()->pgdir,(void*)trap_addr,0))));
   acquire(&(mmap_table.mmap_lock));
   for(ma= mmap_table.mmap_array;ma<&mmap_table.mmap_array[64];ma++){
       if(p != ma->p) continue;
