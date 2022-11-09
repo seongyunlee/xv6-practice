@@ -499,20 +499,11 @@ int deallocmmap(struct mmap_area* ma){
   int num_page=(int)ma->length/PGSIZE;
   int addr=ma->addr;
   for(int i=0;i<num_page;i++){
-    pte_t *pte = walkpgdir(myproc()->pgdir,(void*)(MMAPBASE+addr+i*PGSIZE),0);
-    char* phyaddr =(char *)P2V(PTE_ADDR(*pte));
+    char* phyaddr =(char *)P2V(PTE_ADDR(*walkpgdir(myproc()->pgdir,(void*)(MMAPBASE+addr+i*PGSIZE),0)));
     cprintf("kfree pa %x which is mapped to va %x \n",(int)phyaddr,MMAPBASE+addr+i*PGSIZE);
     cprintf("phypage addr to virtual address %x\n",(int)phyaddr);
     kfree(phyaddr);
-    cprintf("delloacte va %x\n",MMAPBASE+addr+i*PGSIZE); 
-    if((*pte & PTE_P) != 0){
-      uint pa = PTE_ADDR(*pte);
-      if(pa == 0)
-        panic("kfree");
-      char *v = P2V(pa);
-      kfree(v);
-      *pte = 0;
-    }
+    cprintf("delloacte va %x\n",MMAPBASE+addr+i*PGSIZE);    
   }
   return 0;
 }
@@ -527,6 +518,7 @@ int removemmapArea(uint addr){
       if((pte=(int*)walkpgdir(p->pgdir,(void*)addr,0))!=0){
         cprintf("remove va %x\n",addr);
         deallocmmap(ma);
+        *pte=0;
       }
       ma->addr=0; //addr == 0 means that Area is not allocated.
       ma->f = 0;
