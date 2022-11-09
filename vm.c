@@ -346,6 +346,26 @@ copyuvm(pde_t *pgdir, uint sz)
       goto bad;
     }
   }
+  struct mmap_area *ma = mmap_table.mmap_array;
+  acquire(&(mmap_table.mmap_lock));
+  for(;ma<&mmap_table.mmap_array[64];ma++){
+    if(ma->p=!parent) continue;
+    //copy only the allocated mmap
+    if((pte = walkpgdir(pgdir, (void *) ma->addr+MMAPBASE, 0)) == 0) continue;
+    for(i = ma->parent+MMAPBASE; i < ma->parent+ma->length+MMAPBASE; i += PGSIZE){
+      pa = PTE_ADDR(*pte);
+      flags = PTE_FLAGS(*pte);
+      if((mem = kalloc()) == 0)
+        goto bad;
+      memmove(mem, (char*)P2V(pa), PGSIZE);
+      if(mappages(d, (void*)i, PGSIZE, V2P(mem), flags) < 0) {
+        kfree(mem);
+        goto bad;
+      }
+    } 
+  }
+  release(&(mmap_table.mmap_lock));
+
   return d;
 
 bad:
