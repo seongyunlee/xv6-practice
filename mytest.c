@@ -13,7 +13,6 @@ int main(){
     for(int i=0;i<1024;i++){
         x[i]=i;
     }
-    fork();
     wait();
     for(int k=0;k<1024;k++){
         printf(1,"%d",x[k]);
@@ -34,6 +33,7 @@ int main(){
     wait();
     printf(1,"%d process is runnning\n",getpid());
     char *mmap_addr = (char*)mmap(4096, 4096, PROT_READ, 0, fd, 1);
+    fork();
 
     printf(1,"%d mmap file success va%x\n",getpid(),(int)mmap_addr);
     
