@@ -14,7 +14,7 @@ int main(){
         x[i]=i;
     }
     fork();
-    
+    wait();
     for(int k=0;k<1024;k++){
         printf(1,"%d",x[k]);
     }
