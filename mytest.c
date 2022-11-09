@@ -30,11 +30,11 @@ int main(){
         }
         printf(1,"write done\n");
     }
-    wait();
     printf(1,"%d process is runnning\n",getpid());
+    
     char *mmap_addr = (char*)mmap(4096, 4096, PROT_READ, 0, fd, 1);
     fork();
-
+    wait();
     printf(1,"%d mmap file success va%x\n",getpid(),(int)mmap_addr);
     
     //printf(1,"free space after file mmap %d\n",freemem());
