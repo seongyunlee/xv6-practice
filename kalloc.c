@@ -106,7 +106,7 @@ int countfreePage(){
       break;
     }
   }
-  cprintf("count page %d",count)
+  cprintf("count page %d",count);
   release(&kmem.lock);
   return count;
 }
