@@ -547,7 +547,7 @@ int checkmmapArray(uint trap_addr){
   struct mmap_area* ma;
   int mapped=0;
   printMmaparray();
-  cprintf("check pte %d\n",P2V(PTE_ADDR(*walkpgdir(myproc()->pgdir,(void*)trap_addr,0))));
+  cprintf("check pte %x\n",P2V(PTE_ADDR(*walkpgdir(myproc()->pgdir,(void*)trap_addr,0))));
   acquire(&(mmap_table.mmap_lock));
   for(ma= mmap_table.mmap_array;ma<&mmap_table.mmap_array[64];ma++){
       if(p != ma->p) continue;
