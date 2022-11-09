@@ -502,7 +502,7 @@ int deallocmmap(struct mmap_area* ma){
     kfree(phyaddr);
     *pte=0;
   }
-  lcr3(V2P(myproc()->pgdir);
+  lcr3(V2P(myproc()->pgdir));
   return 0;
 }
 int removemmapArea(uint addr){
