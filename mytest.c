@@ -18,7 +18,7 @@ int main(){
     for(int k=0;k<1024;k++){
         printf(1,"%d",x[k]);
     }
-    printf(1,"%d : anonymous mmap test done\n",getpid());
+    printf(1,"\n%d : anonymous mmap test done\n",getpid());
 
 
     if((fd = open("abcdef", O_CREATE|O_RDWR))==-1){
@@ -44,7 +44,7 @@ int main(){
     printf(1,"\n\n munmap test\n");
     munmap((uint)mmap_addr);
     printf(1,"free space after unmmap %d\n",freemem());
-    printf(1,"this massage should not be printed %c\n",mmap_addr[0]);
+    printf(1,"this massage should not be printed %c %x\n",(int)mmap_addr,mmap_addr[0]);
     printf(1,"\n");
     exit();
 }
