@@ -530,7 +530,7 @@ int removemmapArea(uint addr){
   release(&(mmap_table.mmap_lock));
   return -1;
 }
-int printMmaparray(){
+void printMmaparray(){
   cprintf("---------\n");
   acquire(&(mmap_table.mmap_lock));
     struct mmap_area* ma;
