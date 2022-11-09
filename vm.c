@@ -515,7 +515,7 @@ int removemmapArea(uint addr){
     if(p != ma->p) continue;
     if(ma->addr+MMAPBASE==addr){
       int* pte;
-      if((pte=(int*)walkpgdir(p->pgdir,(void*)addr,0))!=0){
+      if((pte=(pte_t*)walkpgdir(p->pgdir,(void*)addr,0))!=0){
         cprintf("remove va %x\n",addr);
         deallocmmap(ma);
         *pte=0;
