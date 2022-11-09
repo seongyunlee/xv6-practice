@@ -19,6 +19,7 @@ struct{
   struct spinlock mmap_lock;
 }mmap_table;
 
+void printMmaparray();
 // Set up CPU's kernel segment descriptors.
 // Run once on entry on each CPU.
 void
