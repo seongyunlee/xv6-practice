@@ -530,10 +530,21 @@ int removemmapArea(uint addr){
   release(&(mmap_table.mmap_lock));
   return -1;
 }
+int printMmaparray(){
+  cprintf("---------\n");
+  acquire(&(mmap_table.mmap_lock));
+    struct mmap_area* ma;
+  for(ma= mmap_table.mmap_array;ma<&mmap_table.mmap_array[64];ma++){
+      if(ma->addr==0) continue;
+      cprintf("mmap area: pid:%d,start:%d,length:%d\n",ma->p->pid,ma->addr,ma->length);
+    }
+  release(&(mmap_table.mmap_lock));
+}
 int checkmmapArray(uint trap_addr){
   struct proc* p = myproc();
   struct mmap_area* ma;
   int mapped=0;
+  printMmaparray();
   acquire(&(mmap_table.mmap_lock));
   for(ma= mmap_table.mmap_array;ma<&mmap_table.mmap_array[64];ma++){
       if(p != ma->p) continue;
