@@ -38,14 +38,14 @@ int main(){
 
     printf(1,"%d mmap file success va%x\n",getpid(),(int)mmap_addr);
     
-    printf(1,"free space after file mmap %d\n",freemem());
+    //printf(1,"free space after file mmap %d\n",freemem());
     for(int i=0;i<64;i++){
         printf(1,"<memory read from %x %c >\n",(int)mmap_addr+i,mmap_addr[i]);
     }
     printf(1,"\n\n munmap test\n");
     munmap((uint)mmap_addr);
     printf(1,"free space after unmmap %d\n",freemem());
-    
+
     printf(1,"\n");
     exit();
 }
