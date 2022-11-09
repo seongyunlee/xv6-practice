@@ -15,7 +15,7 @@ int main(){
     for(int i=0;i<1024;i++){
         x[i]=i;
     }
-    fork();
+    //fork();
     /*
     for(int k=0;k<1024;k++){
         printf(1,"%d",x[k]);
@@ -32,7 +32,7 @@ int main(){
         }
         printf(1,"write done\n");
     }
-
+    wait();
     int *mmap_addr = (int*)mmap(16384, 8196, PROT_READ, MAP_POPULATE, fd, 0);
 
     printf(1,"%d mmap file success va%x\n",getpid(),(int)mmap_addr);
