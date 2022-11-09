@@ -15,7 +15,7 @@ extern char data[];  // defined by kernel.ld
 pde_t *kpgdir;  // for use in scheduler()
 
 struct{
-  struct mmap_area* mmap_array;
+  struct mmap_area mmap_array[64];
   struct spinlock mmap_lock;
 }mmap_table;
 
@@ -428,7 +428,7 @@ int copymmapArea(struct proc* parent,struct proc* child){
   acquire(&(mmap_table.mmap_lock));
   for(;ma<&mmap_table.mmap_array[64];ma++){
     if(ma->p==parent){
-      allocmmapArea(ma->addr,ma->length,ma->prot,ma->flags,ma->f,ma->offset,myproc(),1);
+      allocmmapArea(ma->addr,ma->length,ma->prot,ma->flags,ma->f,ma->offset,child,1);
     }
   }
   release(&(mmap_table.mmap_lock));
