@@ -547,10 +547,10 @@ int checkmmapArray(uint trap_addr){
   return mapped;
 }
 int checkpageTableAgain(uint trap_addr){
-  if(*walkpgdir(myproc()->pgdir,(char*)trap_addr,0)){
-    return 1;
+  if(*walkpgdir(myproc()->pgdir,(char*)trap_addr,0)==0){
+    return 0;
   }
-  return 0;
+  return 1;
 }
 //PAGEBREAK!
 // Blank page.
