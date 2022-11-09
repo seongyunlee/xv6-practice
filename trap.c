@@ -79,7 +79,7 @@ trap(struct trapframe *tf)
     break;
   case T_PGFLT:
     cprintf("handling page fault %x\n",rcr2());
-    if(checkpageTableAgain(rcr2())){
+    if(checkpageTableAgain(rcr2())==1){
       lapiceoi();
       break;
     }
