@@ -34,7 +34,7 @@ int main(){
       fork();
     wait();
     
-    char *mmap_addr = (char*)mmap(4096, 4096, PROT_READ|PROT_WRITE, 0, fd, 1);
+    char *mmap_addr = (char*)mmap(4096, 8192, PROT_READ|PROT_WRITE, 0, fd, 1);
   
     printf(1,"can access %x %d\n",(int)x,x[0]);
     printf(1,"%d :mmap file success va%x\n",getpid(),(int)mmap_addr);
