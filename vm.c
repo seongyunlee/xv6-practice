@@ -417,7 +417,7 @@ uint mmapMapping(uint addr, int length, int prot, int flags, struct file* mfile,
     if((flags&MAP_ANONYMOUS)==0){
       cprintf("sys file read to physical page offset : %d\n ",offset);
       cprintf("file address %x\n",(int)mfile);
-      offset+=mmap_fileread(mfile,(uint)pa,offset);
+      mmap_fileread(mfile,(uint)pa,PGSIZE*i+offset);
     }
     
   }
