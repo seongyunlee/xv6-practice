@@ -14,6 +14,8 @@ int main(){
     for(int i=0;i<1024;i++){
         x[i]=i;
     }
+
+    printf(1,"free space after annoymous lazy access %d\n",freemem());
     for(int k=0;k<1024;k++){
         printf(1,"%d",x[k]);
     }
