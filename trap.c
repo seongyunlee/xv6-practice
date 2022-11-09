@@ -79,10 +79,6 @@ trap(struct trapframe *tf)
     break;
   case T_PGFLT:
     cprintf("handling page fault %x\n",rcr2());
-    if(checkpageTableAgain(rcr2())==1){
-      lapiceoi();
-      break;
-    }
     uint trap_addr =rcr2();
     int mapped = 0;
     mapped=checkmmapArray(trap_addr);
