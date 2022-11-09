@@ -481,7 +481,6 @@ int deallocmmap(struct mmap_area* ma){
   for(int i=0;i<num_page;i++){
     char* phyaddr =(char *)P2V(PTE_ADDR(*walkpgdir(myproc()->pgdir,(void*)(MMAPBASE+addr+i*PGSIZE),0)));
     cprintf("kfree pa %x which is mapped to va %x \n",(int)phyaddr,MMAPBASE+addr+i*PGSIZE);
-    memset(phyaddr,1,PGSIZE);
     cprintf("phypage addr to virtual address %x\n",(int)phyaddr);
     kfree(phyaddr);
     cprintf("delloacte va %x\n",MMAPBASE+addr+i*PGSIZE);    
