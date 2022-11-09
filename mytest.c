@@ -10,7 +10,7 @@ int main(){
     x[1]=1398;
     fork();
     wait();
-    printf(1,"accsee anonymous populate mmap region %x from %d : %d\n",&x[1],getpid(),x[1]);
+    printf(1,"access anonymous populate mmap region %x from %d : %d\n",&x[1],getpid(),x[1]);
 
 
     
