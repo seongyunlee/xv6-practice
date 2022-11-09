@@ -348,6 +348,7 @@ copyuvm(pde_t *pgdir, uint sz)
     }
   }
   struct mmap_area *ma = mmap_table.mmap_array;
+  printMmaparray();
   acquire(&(mmap_table.mmap_lock));
   for(;ma<&mmap_table.mmap_array[64];ma++){
     if(ma->p!=myproc()) continue;
