@@ -46,6 +46,7 @@ int main(){
     printf(1,"this massage should be printed %c %x\n",mmap_addr[0],(int)mmap_addr);
     mmap_addr[0]=3;
     munmap((uint)mmap_addr);
+    mmap_addr[0]=1;
     printf(1,"free space after unmmap %d\n",freemem());
     printf(1,"this massage should not be printed %x %x\n",mmap_addr[0],(int)mmap_addr);
     printf(1,"\n");
