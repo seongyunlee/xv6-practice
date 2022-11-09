@@ -546,6 +546,12 @@ int checkmmapArray(uint trap_addr){
   release(&(mmap_table.mmap_lock));
   return mapped;
 }
+int checkpageTableAgain(uint trap_addr){
+  if(*walkpgdir(myproc()->pgdir,(char*)trap_addr,0)){
+    return 1;
+  }
+  return 0;
+}
 //PAGEBREAK!
 // Blank page.
 //PAGEBREAK!
