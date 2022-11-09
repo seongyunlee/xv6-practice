@@ -520,6 +520,7 @@ int removemmapArea(uint addr){
       if(*(pte=walkpgdir(p->pgdir,(void*)addr,0))!=0){
         cprintf("remove va %x\n",addr);
         deallocmmap(ma);
+        cprintf("what is the pte?:%x",*walkpgdir(p->pgdir,(void*)addr,0));
       }
       ma->addr=0; //addr == 0 means that Area is not allocated.
       ma->f = 0;
