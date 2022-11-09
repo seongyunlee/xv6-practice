@@ -352,14 +352,14 @@ copyuvm(pde_t *pgdir, uint sz)
   for(;ma<&mmap_table.mmap_array[64];ma++){
     if(ma->p!=myproc()) continue;
     //copy only the allocated mmap
-    if((pte = walkpgdir(pgdir, (void *) ma->addr+MMAPBASE, 0)) == 0) continue;
+    pte = walkpgdir(pgdir, (void *) ma->addr+MMAPBASE, 0);
+    if(pte ==0 || (*pte&PTE_P)) continue;
     for(i = ma->addr+MMAPBASE; i < ma->addr+ma->length+MMAPBASE; i += PGSIZE){
       pa = PTE_ADDR(*pte);
       flags = PTE_FLAGS(*pte);
       if((mem = kalloc()) == 0)
         goto bad;
       memmove(mem, (char*)P2V(pa), PGSIZE);
-      cprintf("copy %d %x \n",(int)i,V2P(mem));
       if(mappages(d, (void*)i, PGSIZE, V2P(mem), flags) < 0) {
         kfree(mem);
         goto bad;
