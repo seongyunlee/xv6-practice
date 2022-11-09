@@ -39,10 +39,10 @@ int main(){
     
     printf(1,"free space after file mmap %d\n",freemem());
     for(int i=0;i<64;i++){
-        printf(1,"<memory read from %x %c >",(int)fp+i,fp[i]);
+        printf(1,"<memory read from %x %c >",(int)mmap_addr+i,mmap_addr[i]);
     }
     printf(1,"\n\n munmap test\n");
-    munmap((uint)fp);
+    munmap((uint)mmap_addr);
 
     printf(1,"\n");
     exit();
