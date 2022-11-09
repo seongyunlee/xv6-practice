@@ -6,6 +6,16 @@
 
 int main(){
     printf(1,"start test\n");
+    int* x = (int *)mmap(0,4096,PROT_READ|PROT_WRITE,MAP_ANONYMOUS|MAP_POPULATE,-1,0);
+    x[1]="1398";
+    fork();
+    printf("accsee anonymous populate mmap region %x from %d : %d\n",&x[1],getpid();x[1]);
+
+    
+    
+    /*
+    
+
     printf(1,"free space first %d\n",freemem());
     int* x = (int *)mmap(0,4096,PROT_READ|PROT_WRITE,MAP_ANONYMOUS,-1,0);
     int fd;
@@ -47,5 +57,7 @@ int main(){
     printf(1,"free space after unmmap %d\n",freemem());
     printf(1,"this massage should not be printed %c %x\n",mmap_addr[0],(int)mmap_addr);
     printf(1,"\n");
+
+    */
     exit();
 }
