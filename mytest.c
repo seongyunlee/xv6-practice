@@ -7,9 +7,7 @@
 int main(){
     printf(1,"start test\n");
     printf(1,"free space first %d\n",freemem());
-    uint i = (uint) mmap(0, 8192, PROT_READ, MAP_POPULATE|MAP_ANONYMOUS, -1, 0);
-    printf(1,"%d %x\n",*((int *)i));
-    int* x = (int *)mmap(8192,4096,PROT_READ|PROT_WRITE,MAP_ANONYMOUS,-1,0);
+    int* x = (int *)mmap(0,4096,PROT_READ|PROT_WRITE,MAP_ANONYMOUS,-1,0);
     int fd;
     printf(1,"free space annonymous map %d\n",freemem());
     for(int i=0;i<1024;i++){
@@ -34,7 +32,7 @@ int main(){
     }
     wait();
     printf(1,"%d process is runnning\n",getpid());
-    char *mmap_addr = (char*)mmap(16384, 4096, PROT_READ, 0, fd, 1);
+    char *mmap_addr = (char*)mmap(4096, 4096, PROT_READ, 0, fd, 1);
 
     printf(1,"%d mmap file success va%x\n",getpid(),(int)mmap_addr);
     
