@@ -512,7 +512,7 @@ int deallocmmap(struct mmap_area* ma){
     kfree(phyaddr);
     cprintf("delloacte va %x\n",MMAPBASE+addr+i*PGSIZE);    
     *pte=0;
-    cprintf("is it deallocted? %x\n",P2V(PTE_ADDR(*walkpgdir(myproc()->pgdir,(void*)(MMAPBASE+addr+i*PGSIZE),0)));
+    cprintf("is it deallocted? %x\n",(int)P2V(PTE_ADDR(*walkpgdir(myproc()->pgdir,(void*)(MMAPBASE+addr+i*PGSIZE),0))));
   }
   return 0;
 }
