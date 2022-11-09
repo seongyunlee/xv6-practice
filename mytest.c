@@ -33,6 +33,7 @@ int main(){
         printf(1,"write done\n");
     }
     wait();
+    printf(1,"%d process is runnning\n",getpid());
     char *mmap_addr = (char*)mmap(16384, 8196, PROT_READ, MAP_POPULATE, fd, 0);
 
     printf(1,"%d mmap file success va%x\n",getpid(),(int)mmap_addr);

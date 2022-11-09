@@ -395,7 +395,7 @@ copyout(pde_t *pgdir, uint va, void *p, uint len)
 }
 uint mmap_fileread(struct file *f,uint va,int offset){
   ilock(f->ip);
-  cprintf("mmapfile readi at %x",(int)va);
+  cprintf("mmapfile readi at %x\n",(int)va);
   int r_byte = readi(f->ip,(char *)va,(uint)offset,PGSIZE);
   offset+=r_byte;
   iunlock(f->ip);
