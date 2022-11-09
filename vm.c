@@ -472,10 +472,10 @@ allocmmapArea(uint addr, int length, int prot, int flags, struct file *f, int of
   struct mmap_area *ma = mmap_table.mmap_array;
   cprintf("address of mmap array %x\n",(int)ma);
   for(;ma<&mmap_table.mmap_array[64];ma++){
-    if(ma->addr == 0)
+    if((int)ma->p == 0)
       break;
   }
-  if(ma->addr != 0)
+  if(ma == &mmap_table.mmap_array[64])
     return -1;
   //set mmap area info
   ma->addr=addr;
@@ -521,7 +521,7 @@ int removemmapArea(uint addr){
         cprintf("remove va %x\n",addr);
         deallocmmap(ma);
       }
-      ma->addr=0; //addr == 0 means that Area is not allocated.
+      ma->p = 0; //p == 0 means that Area is not allocated.
       ma->f = 0;
       release(&(mmap_table.mmap_lock));
       return 1;
@@ -531,11 +531,11 @@ int removemmapArea(uint addr){
   return -1;
 }
 void printMmaparray(){
-  cprintf("---------\n");
+  cprintf("----------\n");
   acquire(&(mmap_table.mmap_lock));
-    struct mmap_area* ma;
+  struct mmap_area* ma;
   for(ma= mmap_table.mmap_array;ma<&mmap_table.mmap_array[64];ma++){
-      if(ma->addr==0) continue;
+      if(ma->p==0) continue;
       cprintf("mmap area: pid:%d,start:%d,length:%d\n",ma->p->pid,ma->addr,ma->length);
     }
   release(&(mmap_table.mmap_lock));
