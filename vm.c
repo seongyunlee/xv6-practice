@@ -353,7 +353,7 @@ copyuvm(pde_t *pgdir, uint sz)
     if(ma->p!=myproc()) continue;
     //copy only the allocated mmap
     pte = walkpgdir(pgdir, (void *) ma->addr+MMAPBASE, 0);
-    if(pte ==0 || (*pte&PTE_P)) con
+    if(pte ==0 || (*pte&PTE_P)) continue;
     for(i = ma->addr+MMAPBASE; i < ma->addr+ma->length+MMAPBASE; i += PGSIZE){
       pa = PTE_ADDR(*pte);
       flags = PTE_FLAGS(*pte);
