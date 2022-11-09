@@ -9,7 +9,7 @@ int main(){
     int* x = (int *)mmap(0,4096,PROT_READ|PROT_WRITE,MAP_ANONYMOUS|MAP_POPULATE,-1,0);
     x[1]="1398";
     fork();
-    printf(1,"accsee anonymous populate mmap region %x from %d : %d\n",&x[1],getpid();x[1]);
+    printf(1,"accsee anonymous populate mmap region %x from %d : %d\n",&x[1],getpid(),x[1]);
 
 
     
