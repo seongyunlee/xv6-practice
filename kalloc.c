@@ -72,7 +72,6 @@ kfree(char *v)
   r->next = kmem.freelist;
   kmem.freelist = r;
 
-  cprintf("kfree pa %x->next = %x",(int)v,(int)r->next);
   if(kmem.use_lock)
     release(&kmem.lock);
 }

@@ -44,7 +44,7 @@ int main(){
     }
     printf(1,"\n\n munmap test\n");
     munmap((uint)mmap_addr);
-
+    printf(1,"%c",mmap_addr[0]);
     printf(1,"\n");
     exit();
 }
