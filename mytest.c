@@ -32,7 +32,7 @@ int main(){
     }
     printf(1,"%d process is runnning\n",getpid());
     
-    char *mmap_addr = (char*)mmap(4096, 4096, PROT_READ, 0, fd, 1);
+    char *mmap_addr = (char*)mmap(4096, 4096, PROT_READ|PROT_WRITE, 0, fd, 1);
     fork();
     wait();
     printf(1,"can access %x %d\n",(int)x,x[0]);
@@ -44,9 +44,9 @@ int main(){
     }
     printf(1,"\n\n munmap test\n");
     printf(1,"this massage should be printed %c %x\n",mmap_addr[0],(int)mmap_addr);
-    //munmap((uint)mmap_addr);
+    munmap((uint)mmap_addr);
     printf(1,"free space after unmmap %d\n",freemem());
-    mmap_addr = (char*)mmap(4096, 4096, PROT_READ, MAP_ANONYMOUS|MAP_POPULATE, fd, 1);
+    mmap_addr[0]=1;
     printf(1,"this massage should not be printed %c %x\n",mmap_addr[0],(int)mmap_addr);
     printf(1,"\n");
 
