@@ -13,7 +13,6 @@ int main(){
     for(int i=0;i<1024;i++){
         x[i]=i;
     }
-    wait();
     for(int k=0;k<1024;k++){
         printf(1,"%d",x[k]);
     }
@@ -35,7 +34,8 @@ int main(){
     char *mmap_addr = (char*)mmap(4096, 4096, PROT_READ, 0, fd, 1);
     fork();
     wait();
-    printf(1,"%d mmap file success va%x\n",getpid(),(int)mmap_addr);
+    printf("can access %x %d\n",(int)x,x[0]);
+    printf(1,"%d :mmap file success va%x\n",getpid(),(int)mmap_addr);
     
     //printf(1,"free space after file mmap %d\n",freemem());
     for(int i=0;i<64;i++){
